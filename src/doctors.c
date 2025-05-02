@@ -43,6 +43,7 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
+    addDocToDepa(newDoc);
     employeNum++;
 }
 

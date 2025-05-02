@@ -3,12 +3,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "nav.c"
 
 int patientNum = 0; 
 patient* patients[2000];  // Array of pointers to patient structs
 
-void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department, doctor assignedDoc) {
+void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department) {
     patient *newPatient = (patient*)malloc(sizeof(patient));
+    if (newPatient==NULL)
+    {
+       printf("failed to add patient");
+       return;
+    }
+    
     strcpy(newPatient->name, name);
     strcpy(newPatient->medicalCase, medicalCase);
     strcpy(newPatient->address, address);
@@ -21,4 +28,40 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     patients[patientNum] = newPatient;
     addPatientToDepa(newPatient);
     patientNum++;
+        printf("Patient added successfully!\n");
+
+}
+
+void viewAllPatients(){
+    for (int i = 0; i < patientNum; i++)
+    {
+        printf("-The patient number %d is %s\n",i+1,patients[i]->name);
+    }
+    managePatients();
+    
+}
+void updatePatientName(char patientID[14],char name[30]){
+    
+};
+char* conditionToString(condition cond) {
+    static char condStr[10]; // Static so it persists after function returns
+    
+    switch (cond) {
+        case urgence:
+            strcpy(condStr, "urgence");
+            break;
+        case danger:
+            strcpy(condStr, "danger");
+            break;
+        case normal:
+            strcpy(condStr, "normal");
+            break;
+        case visit:
+            strcpy(condStr, "visit");
+            break;
+        default:
+            strcpy(condStr, "unknown");
+    }
+    
+    return condStr;
 }

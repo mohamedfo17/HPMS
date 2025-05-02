@@ -16,9 +16,10 @@ typedef struct {
     patient* patients[50];  // Fixed array size for patients
     int numDoc;
     int numPat;  // Added counter for patients
+    int surgeryRooms;
 } departmentInfo;
 
 void addDocToDepa(doctor* doc);
 void addPatientToDepa(patient* patient);
-
+void departmentToString(department department);
 #endif
