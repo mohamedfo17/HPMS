@@ -17,6 +17,7 @@ typedef struct {
     int numDoc;
     int numPat;  // Added counter for patients
     int surgeryRooms;
+    int balence;
 } departmentInfo;
 
 void addDocToDepa(doctor* doc);

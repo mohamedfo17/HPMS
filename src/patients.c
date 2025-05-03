@@ -1,12 +1,11 @@
-#include "patients.h"
+#include "../headers/patients.h"
 #include "doctors.c"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "nav.c"
 
 int patientNum = 0; 
-patient* patients[2000];  // Array of pointers to patient structs
+patient* patients[200];  // Array of pointers to patient structs
 
 void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department) {
     patient *newPatient = (patient*)malloc(sizeof(patient));

@@ -42,7 +42,7 @@
         searchPatientInTree();
         break;
     case 8:
-        viewHospitalStructure();
+    showHospitalStructureNav();
         break;
     case 9:
         saveDataToFile();
@@ -107,7 +107,7 @@ void addPatientNav() {
     department patientDepartment;
     int conditionChoice, departmentChoice;
     
-    // Clear input buffer before starting
+    printf("\n--- Add Patient ---\n");
     while (getchar() != '\n');
     
     printf("1-Enter the patient name: ");
@@ -385,5 +385,34 @@ void viewPatientNav(){
     printf("Condition: %s\n", conditionToString(patient.condition)); // Convert enum to string
     printf("Department: %s\n", departmentToString(patient.department)); // Convert enum to string
     printf("-----------------------\n");
+
+};
+void addPatientToQueue(){
+    printf("enter id of patient you want to add to queue");
+    char id[14];
+    fgets(id,sizeof(id),stdin);
+    //find patient
+    Patient patient = findPatientById(id);
+    if (patient.id == NULL) {
+        printf("No patient found with ID: %s\n", id);
+        return;
+    }
+    //add to queue
+    addToQueue(patient);
+};
+void dischargePatient(){
+    printf("enter id of patient you want to discharge");
+    char id[14];
+    fgets(id,sizeof(id),stdin);
+    //find patient
+    Patient patient = findPatientById(id);
+    if (patient.id == NULL) {
+        printf("No patient found with ID: %s\n", id);
+        return;
+    }
+    //discharge patient
+    discharge(patient);
+};
+void undoLastDischarge(){
 
 };

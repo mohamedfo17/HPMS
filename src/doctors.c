@@ -1,4 +1,4 @@
-#include "doctors.h"
+#include "../headers/doctors.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -32,6 +32,10 @@ void initId(char id[14], const char name[30], int age, rank rank, int employeNum
 
 void addDoctor(char name[30], int age, char speciality[30], char address[150], rank rank,department department) {
     doctor *newDoc = (doctor*)malloc(sizeof(doctor));
+    if (newDoc == NULL) {
+        printf("failed to add doctor\n");
+        return;
+    }
     strcpy(newDoc->name, name);
     strcpy(newDoc->speciality, speciality);
     strcpy(newDoc->address, address);
@@ -40,7 +44,15 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     newDoc->rank = rank;
     newDoc->department = department;
 
-    
+    switch(rank) {
+        case intern: newDoctor->maxPatients = 4; break;    // Interns handle visit cases only
+        case low: newDoctor->maxPatients = 8; break;       // Low handles visit and normal
+        case med: newDoctor->maxPatients = 14; break;      // Med handles all except urgence
+        case high: newDoctor->maxPatients = 10; break;     // High handles danger and urgence
+        case cheif: newDoctor->maxPatients = 5; break;     // Chief handles urgence only
+        case president: newDoctor->maxPatients = 3; break; // President handles special cases
+        default:;//;
+    }
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
     addDocToDepa(newDoc);
@@ -70,32 +82,23 @@ doctor* assignDoc(patient *patient){
 
 }
 
-void maxPatientsCheck(doctor doctor){
+int maxPatientsCheck(doctor doctor) {
 
-        if (doctor.rank=0)
-        {
-            doctor.maxPatients=4;//visit only cases
-        }
-        if (doctor.rank=1)
-        {
-            doctor.maxPatients=8;//visit only and normal cases
-        }
-        if (doctor.rank=2)
-        {
-         doctor.maxPatients=14;//visit  and normal  and danger cases
+    if (doctor.rank == 0) {
+        return (doctor.maxPatients < 4) ? 1 : 0; // visit only cases
+    }
+    if (doctor.rank == 1) {
+        return (doctor.maxPatients < 8) ? 1 : 0; // visit only and normal cases
+    }
+    if (doctor.rank == 2) {
+        return (doctor.maxPatients < 14) ? 1 : 0; // visit and normal and danger cases
+    }
+    if (doctor.rank == 3) {
+        return (doctor.maxPatients < 10) ? 1 : 0; // high and danger cases
+    }
+    if (doctor.rank == 4) {
+        return (doctor.maxPatients < 5) ? 1 : 0; // danger cases
+    }
 
-        }
-        if (doctor.rank=3)
-        {
-         doctor.maxPatients=10;//high  and danger cases
-
-        }
-        if (doctor.rank=4)
-        {
-         doctor.maxPatients=5;// danger cases
-
-        }
-        
-        
-
+    return 0; // Default return value
 }

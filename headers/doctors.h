@@ -27,6 +27,6 @@ extern int employeNum;  // Declare the global variable
 void addDoctor(char name[30], int age, char speciality[30], char address[150], rank rank, int numPatients, int maxPatients,department department);
 void initId(char id[14], const char name[30], int age, rank rank, int employeNum);
 doctor* assignDoc(patient *patient);
-void maxPatientsCheck(doctor doctor);
+int maxPatientsCheck(doctor doctor);
 
 #endif
