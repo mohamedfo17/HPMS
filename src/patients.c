@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-int patientNum = 0; 
+#include "treePat.c"
+ int patientNum = 0; 
 patient* patients[200];  // Array of pointers to patient structs
-
+TreeNode *rootEmePat=NULL;
+TreeNode *rootCarPat=NULL;
+TreeNode *rootPhyPat=NULL;
 void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department) {
     patient *newPatient = (patient*)malloc(sizeof(patient));
     if (newPatient==NULL)
@@ -26,6 +28,13 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     initId(newPatient->id, name, age, condition, patientNum);
     patients[patientNum] = newPatient;
     addPatientToDepa(newPatient);
+    if (newPatient->department == 0) {
+        rootEmePat = insertTree(rootEmePat,newPatient, newPatient->id, condition);
+    } else if (newPatient->department == 1) {
+        rootCarPat = insertTree(rootCarPat,newPatient, newPatient->id, condition);
+    } else if (newPatient->department == 2) {
+        rootPhyPat = insertTree(rootPhyPat,newPatient, newPatient->id, condition);
+    } ;
     patientNum++;
         printf("Patient added successfully!\n");
 

@@ -3,6 +3,8 @@
         "string.h": "c",
         "stdlib.h": "c",
         "stdio.h": "c",
-        "nav.h": "c"
+        "nav.h": "c",
+        "doctors.h": "c",
+        "patients.h": "c"
     }
 }

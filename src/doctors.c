@@ -1,7 +1,12 @@
 #include "../headers/doctors.h"
+#include "treeDoc.c"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+TreeNode *rootEmeDoc=NULL;
+TreeNode *rootCarDoc=NULL;
+TreeNode *rootPhyDoc=NULL;
+
 
 int employeNum = 0; 
 doctor* doctors[200];  // Array of pointers to doctor structs
@@ -45,17 +50,24 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     newDoc->department = department;
 
     switch(rank) {
-        case intern: newDoctor->maxPatients = 4; break;    // Interns handle visit cases only
-        case low: newDoctor->maxPatients = 8; break;       // Low handles visit and normal
-        case med: newDoctor->maxPatients = 14; break;      // Med handles all except urgence
-        case high: newDoctor->maxPatients = 10; break;     // High handles danger and urgence
-        case cheif: newDoctor->maxPatients = 5; break;     // Chief handles urgence only
-        case president: newDoctor->maxPatients = 3; break; // President handles special cases
+        case intern: newDoc->maxPatients = 4; break;    // Interns handle visit cases only
+        case low: newDoc->maxPatients = 8; break;       // Low handles visit and normal
+        case med: newDoc->maxPatients = 14; break;      // Med handles all except urgence
+        case high: newDoc->maxPatients = 10; break;     // High handles danger and urgence
+        case cheif: newDoc->maxPatients = 5; break;     // Chief handles urgence only
+        case president: newDoc->maxPatients = 3; break; // President handles special cases
         default:;//;
     }
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
     addDocToDepa(newDoc);
+    if (newDoc->department == 0) {
+        rootEmeDoc = insertTree(rootEmeDoc, newDoc->id, rank);
+    } else if (newDoc->department == 1) {
+        rootCarDoc = insertTree( rootCarDoc, newDoc->id, rank);
+    } else if (newDoc->department == 2) {
+        rootPhyDoc = insertTree(rootPhyDoc, newDoc->id, rank);
+    } ;
     employeNum++;
 }
 
