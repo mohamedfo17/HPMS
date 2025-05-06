@@ -366,28 +366,199 @@ void editPatientNav() {
     
     printf("Patient information updated successfully!\n");
 }
-
-void viewPatientNav(){
-    printf("enter id of patient you want to view");
+void deletePatientNav(){
+    printf("enter id of patient you want to delete\n and his condition \n and his department\n");
     char id[14];
     fgets(id,sizeof(id),stdin);
+    condition deleteCondition;
+    scanf("%d", &deleteCondition);
+    department deleteDepartment;
+    scanf("%d", &deleteDepartment);
+    deletePat(id,deleteCondition,deleteDepartment);
+};
+void viewPatientNav(){
+    printf("enter id of patient you want to view\n and his condition \n and his department\n");
+    char id[14];
+    fgets(id,sizeof(id),stdin);
+    condition searchCondition;
+    scanf("%d", &searchCondition);
+    department searchDepartment;
+    scanf("%d", &searchDepartment);
+
     //find patient
-    Patient patient = findPatientById(id);
-    if (patient.id == NULL) {
+    patient *patient = findPatientById(id,searchCondition,searchDepartment);
+    if (patient->id == NULL) {
         printf("No patient found with ID: %s\n", id);
         return;
     }
     printf("\n--- Patient Details ---\n");
-    printf("Name: %s\n", patient.name);
-    printf("Age: %d\n", patient.age);
-    printf("Medical Case: %s\n", patient.medicalCase);
-    printf("Address: %s\n", patient.address);
-    printf("Condition: %s\n", conditionToString(patient.condition)); // Convert enum to string
-    printf("Department: %s\n", departmentToString(patient.department)); // Convert enum to string
+    printf("Name: %s\n", patient->name);
+    printf("Age: %d\n", patient->age);
+    printf("Medical Case: %s\n", patient->medicalCase);
+    printf("Address: %s\n", patient->address);
+    printf("Condition: %s\n", conditionToString(patient->condition)); // Convert enum to string
+    printf("Department: %s\n", departmentToString(patient->department)); // Ensure departmentToString is defined and returns a valid string
+    // Ensure departmentToString is defined and returns a valid string
     printf("-----------------------\n");
 
 };
-void addPatientToQueue(){
+
+void manageDoctors() {
+    printf("\n--- Doctor Management ---\n");
+    printf("1. Add Doctor\n");
+    printf("2. Edit Doctor\n");
+    printf("3. View Doctor\n");
+    printf("4. Delete Doctor\n");
+    printf("5. View All Doctors\n");
+    printf("6. Back\n");
+    printf("Choose an option: ");
+    
+    int choice;
+    scanf("%d", &choice);
+    
+    switch (choice) {
+    case 1:
+        addDoctorNav();
+        break;
+    case 2:
+        editDoctorNav();
+        break;
+    case 3:
+        viewDoctorNav();
+        break;
+    case 4:
+        deleteDoctorNav();
+        break;
+    case 5:
+        viewAllDoctors();
+        break;
+    case 6:
+        homePage();  // Return to main menu
+        break;
+    default:
+        printf("Invalid option! Please try again.\n");
+        manageDoctors();  
+        break;
+    }
+}
+void addDoctorNav() {
+    char name[30];
+    int age;
+    char specialty[100];
+    char address[150];
+    rank doctorRank;
+    department departmentDoc;
+    int rankChoice;
+
+    printf("\n--- Add Doctor ---\n");
+    while (getchar() != '\n'); // Clear input buffer
+
+    printf("1-Enter the doctor name: ");
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = 0;
+
+    printf("2-Enter the doctor age: ");
+    scanf("%d", &age);
+    while (getchar() != '\n'); // Clear input buffer after scanf
+
+    printf("3-Enter the doctor specialty: ");
+    fgets(specialty, sizeof(specialty), stdin);
+    specialty[strcspn(specialty, "\n")] = 0;
+
+    printf("4-Enter the doctor address: ");
+    fgets(address, sizeof(address), stdin);
+    address[strcspn(address, "\n")] = 0;
+
+    printf("5-Select doctor rank:\n");
+    printf("   1. Intern\n");
+    printf("   2. Low\n");
+    printf("   3. Medium\n");
+    printf("   4. High\n");
+    printf("   5. Cheif\n");
+    printf("   6. President\n");
+    printf("Enter choice (1-6): ");
+    scanf("%d", &rankChoice);
+
+    // Convert the choice to the rank enum
+    switch(rankChoice) {
+        case 1:
+            doctorRank = intern;
+            break;
+        case 2:
+            doctorRank = low;
+            break;
+        case 3:
+            doctorRank = med;
+            break;
+        case 4:
+            doctorRank = high;
+            break;
+        case 5:
+            doctorRank = cheif;
+            break;
+        case 6:
+            doctorRank = president;
+            break;
+        default:
+            doctorRank = intern; // Default
+            printf("Invalid choice, setting to Intern.\n");
+    }
+    printf("6-Select patient department:\n");
+    printf("   1. Lab\n");
+    printf("   2. Cardiology\n");
+    printf("   3. Physiology\n");
+    printf("   4. Emergency\n");
+    printf("Enter choice (1-4): ");
+    scanf("%d", &departmentDoc);
+    //try no switch here
+    // Call your addDoctor function here (you should have one implemented)
+    addDoctor(name, age, specialty, address, doctorRank,departmentDoc);
+}
+//edit doctors nav is requiered;
+void deleteDoctorNav() {
+    printf("Enter the ID of the doctor you want to delete,\nfollowed by their rank:\n");
+
+    char id[14];
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = 0; // Remove newline character if present
+
+    rank deleteRank;
+    scanf("%d", &deleteRank);
+    department deleteDepartment;
+    scanf("%d", &deleteDepartment);
+    deleteDoc(id,deleteDepartment, deleteRank);
+}
+void viewDoctorNav() {
+    printf("Enter the ID of the doctor you want to view\nand their rank and department:\n");
+
+    char id[14];
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = 0; // Remove newline character
+
+    rank searchRank;
+    scanf("%d", &searchRank);
+
+    department searchDepartment;
+    scanf("%d", &searchDepartment);
+
+    // Find doctor
+    doctor *doc = findDoctorById(id, searchRank, searchDepartment);
+    if (doc == NULL || doc->id == NULL) {
+        printf("No doctor found with ID: %s\n", id);
+        return;
+    }
+
+    printf("\n--- Doctor Details ---\n");
+    printf("Name: %s\n", doc->name);
+    printf("Age: %d\n", doc->age);
+    printf("Specialty: %s\n", doc->speciality);
+    printf("Address: %s\n", doc->address);
+    printf("Rank: %s\n", rankToString(doc->rank)); // Convert rank enum to string
+    printf("Department: %s\n", departmentToString(doc->department)); // Convert department enum to string
+    printf("----------------------\n");
+}
+
+/*void addPatientToQueue(){
     printf("enter id of patient you want to add to queue");
     char id[14];
     fgets(id,sizeof(id),stdin);
@@ -399,8 +570,8 @@ void addPatientToQueue(){
     }
     //add to queue
     addToQueue(patient);
-};
-void dischargePatient(){
+};*/
+/*void dischargePatient(){
     printf("enter id of patient you want to discharge");
     char id[14];
     fgets(id,sizeof(id),stdin);
@@ -415,4 +586,4 @@ void dischargePatient(){
 };
 void undoLastDischarge(){
 
-};
+};*/

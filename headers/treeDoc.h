@@ -2,13 +2,12 @@
 #define TREEDOC_H
 #include "doctors.h"
 
-struct Node {
+typedef struct Node {
     char data[14];
     doctor *doctor;
     struct Node* left;
     struct Node* right;
-};
-typedef struct Node TreeNode;
+}TreeNode;
 
 TreeNode* createNode(char id[14]);
 TreeNode* insertTree(TreeNode *root, doctor *doctor,char id[14],rank rank);

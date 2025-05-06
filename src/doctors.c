@@ -6,7 +6,12 @@
 TreeNode *rootEmeDoc=NULL;
 TreeNode *rootCarDoc=NULL;
 TreeNode *rootPhyDoc=NULL;
-
+int n=0;
+int *firstInsert=&n;
+int f=0;
+int *flip=&f;
+int g=0;//maybe you will need to declare them in doc and pat header files
+int *firstSearch=&g;
 
 int employeNum = 0; 
 doctor* doctors[200];  // Array of pointers to doctor structs
@@ -60,18 +65,21 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     }
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
-    addDocToDepa(newDoc);
+    //addDocToDepa(newDoc);
     if (newDoc->department == 0) {
-        rootEmeDoc = insertTree(rootEmeDoc, newDoc->id, rank);
+        rootEmeDoc = insertTree(rootEmeDoc, newDoc,newDoc->id, rank,firstInsert,flip);
+        *firstInsert=1;
     } else if (newDoc->department == 1) {
-        rootCarDoc = insertTree( rootCarDoc, newDoc->id, rank);
+        rootCarDoc = insertTree( rootCarDoc,newDoc, newDoc->id, rank,firstInsert,flip);
+        *firstInsert=1;
     } else if (newDoc->department == 2) {
-        rootPhyDoc = insertTree(rootPhyDoc, newDoc->id, rank);
+        rootPhyDoc = insertTree(rootPhyDoc, newDoc,newDoc->id, rank,firstInsert,flip);
+        *firstInsert=1;    
     } ;
     employeNum++;
 }
 
-doctor* assignDoc(patient *patient){
+/*doctor* assignDoc(patient *patient){
     doctor *assignedDoc=NULL;
     switch (patient->condition)
     {
@@ -92,7 +100,7 @@ doctor* assignDoc(patient *patient){
     }
     return assignedDoc;
 
-}
+}*/
 
 int maxPatientsCheck(doctor doctor) {
 
@@ -113,4 +121,28 @@ int maxPatientsCheck(doctor doctor) {
     }
 
     return 0; // Default return value
+}
+TreeNode* findDocById(char id[14],condition searchRank) {
+    TreeNode* foundNode = NULL;
+    if (rootEmeDoc != NULL) {
+        foundNode = search(rootEmeDoc, id, searchRank, firstSearch);
+    }
+    if (foundNode == NULL && rootCarDoc != NULL) {
+        foundNode = search(rootCarDoc, id, searchRank, firstSearch);
+    }
+    if (foundNode == NULL && rootPhyDoc != NULL) {
+        foundNode = search(rootPhyDoc, id, searchRank, firstSearch);
+    }
+    return foundNode;
+
+}
+void deleteDoc(char id[14], department searchDepartment, rank searchRank) {
+    TreeNode* foundNode = NULL;
+    if (searchDepartment == 0) {
+        rootEmeDoc = deleteNode(rootEmeDoc, id, searchRank, firstSearch);
+    } else if (searchDepartment == 1) {
+        rootCarDoc = deleteNode(rootCarDoc, id, searchRank, firstSearch);
+    } else if (searchDepartment == 2) {
+        rootPhyDoc = deleteNode(rootPhyDoc, id, searchRank, firstSearch);
+    }
 }

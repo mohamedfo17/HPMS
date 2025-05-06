@@ -10,7 +10,7 @@ typedef enum condition {
     urgence,danger,normal,visit
 } condition;
 
-typedef struct 
+typedef struct patient 
 {
     char name[30];
     int age;
@@ -20,7 +20,7 @@ typedef struct
     doctor *assignedDoc;
     department department;
     char id[14];
-}patient;
+} patient;
 
 void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition,department department,doctor assignedDoc);
 
@@ -37,7 +37,7 @@ void updatePatientDepartment(char patientID[14],department department);
 void updatePatient(char patientID[30],char name[30],int age,char medicalCase[200],char address[150],condition condition,department department);
 char conditionToString(condition condition);
 
-
+TreeNode* findPatientById(char id[14],condition searchCondition);
 
 
 

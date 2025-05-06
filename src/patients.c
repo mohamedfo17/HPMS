@@ -5,6 +5,12 @@
 #include <string.h>
 #include "treePat.c"
  int patientNum = 0; 
+ int n = 0;
+int *firstInsert = &n;
+int f = 0;
+int *flip = &f;
+int g = 0;
+int *firstSearch = &g;
 patient* patients[200];  // Array of pointers to patient structs
 TreeNode *rootEmePat=NULL;
 TreeNode *rootCarPat=NULL;
@@ -29,11 +35,14 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     patients[patientNum] = newPatient;
     addPatientToDepa(newPatient);
     if (newPatient->department == 0) {
-        rootEmePat = insertTree(rootEmePat,newPatient, newPatient->id, condition);
+        rootEmePat = insertTree(rootEmePat,newPatient, newPatient->id, condition,firstInsert,flip);
+        *firstInsert=1;
     } else if (newPatient->department == 1) {
-        rootCarPat = insertTree(rootCarPat,newPatient, newPatient->id, condition);
+        rootCarPat = insertTree(rootCarPat,newPatient, newPatient->id, condition,firstInsert,flip);
+        *firstInsert=1;
     } else if (newPatient->department == 2) {
-        rootPhyPat = insertTree(rootPhyPat,newPatient, newPatient->id, condition);
+        rootPhyPat = insertTree(rootPhyPat,newPatient, newPatient->id, condition,firstInsert,flip);
+        *firstInsert=1;
     } ;
     patientNum++;
         printf("Patient added successfully!\n");
@@ -72,4 +81,28 @@ char* conditionToString(condition cond) {
     }
     
     return condStr;
+}
+TreeNode* findPatientById(char id[14],condition searchCondition) {
+    TreeNode* foundNode = NULL;
+    if (rootEmePat != NULL) {
+        foundNode = search(rootEmePat, id, searchCondition, firstSearch);
+    }
+    if (foundNode == NULL && rootCarPat != NULL) {
+        foundNode = search(rootCarPat, id, searchCondition, firstSearch);
+    }
+    if (foundNode == NULL && rootPhyPat != NULL) {
+        foundNode = search(rootPhyPat, id, searchCondition, firstSearch);
+    }
+    return foundNode;
+
+}
+void deletePat(char id[14],condition searchCondition,department searchDepartment) {
+    TreeNode* foundNode = NULL;
+    if (searchDepartment == 0) {
+        rootEmePat = deleteNode(rootEmePat, foundNode->patient, id, searchCondition, firstSearch);
+    } else if (searchDepartment == 1) {
+        rootCarPat = deleteNode(rootCarPat, foundNode->patient, id, searchCondition, firstSearch);
+    } else if (searchDepartment == 2) {
+        rootPhyPat = deleteNode(rootPhyPat, foundNode->patient, id, searchCondition, firstSearch);
+    }
 }

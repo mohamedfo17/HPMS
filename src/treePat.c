@@ -5,12 +5,7 @@
 #include "../headers/patients.h"
 #include "../headers/doctors.h"
 
-int n = 0;
-int *firstInsert = &n;
-int f = 0;
-int *flip = &f;
-int g = 0;
-int *firstSearch = &g;
+
 
 TreeNode* createNode(char data[14], patient *patient) {
     TreeNode *newNode = (TreeNode *)malloc(sizeof(TreeNode));
@@ -27,7 +22,7 @@ TreeNode* insertTree(TreeNode *root, patient *patient, char data[14], condition 
     }
 
     if (*firstInser == 0) {
-        (*firstInser) = 1;
+        
 
         if (condition == 0 || condition == 1) {
             root->right = insertTree(root->left, patient, data, condition, firstInser, flip);
@@ -55,16 +50,14 @@ TreeNode* findMin(TreeNode* root) {
     return current;
 }
 
-TreeNode* deleteNode(TreeNode* root, patient *patient, char data[14], condition condition) {
+TreeNode* deleteNode(TreeNode* root, char data[14], condition condition, int *firstSearch)
+ {
     if (root == NULL) {
-        return root;
+        return NULL;
     }
 
-    if (condition == 0 || condition == 1) {
-        root->left = deleteNode(root->left, patient, data, condition);
-    } else if (condition >= 2) {
-        root->right = deleteNode(root->right, patient, data, condition);
-    } else {
+    if (strcmp(root->data, data) == 0) {
+        // Node to delete found
         if (root->left == NULL && root->right == NULL) {
             free(root);
             return NULL;
@@ -79,14 +72,27 @@ TreeNode* deleteNode(TreeNode* root, patient *patient, char data[14], condition 
         } else {
             TreeNode* temp = findMin(root->right);
             strcpy(root->data, temp->data);
-            root->right = deleteNode(root->right, patient, temp->data, condition);
+            root->patient = temp->patient;
+            root->right = deleteNode(root->right,  temp->data, condition, firstSearch);
+        }
+    } else {
+        if (*firstSearch == 0) {
+            *firstSearch = 1;
+            if (condition == 0 || condition == 1) {
+                root->left = deleteNode(root->left,  data, condition, firstSearch);
+            } else {
+                root->right = deleteNode(root->right,  data, condition, firstSearch);
+            }
+        } else {
+            root->left = deleteNode(root->left,  data, condition, firstSearch);
+            root->right = deleteNode(root->right,  data, condition, firstSearch);
         }
     }
 
     return root;
 }
 
-TreeNode* search(TreeNode *root, char id[14], condition condition) {
+TreeNode* search(TreeNode *root, char id[14], condition condition, int *firstSearch) {
     if (root == NULL) {
         return NULL;
     }
@@ -101,16 +107,16 @@ TreeNode* search(TreeNode *root, char id[14], condition condition) {
         *firstSearch = 1;
 
         if (condition == 0 || condition == 1) {
-            result = search(root->left, id, condition);
+            result = search(root->left, id, condition, firstSearch);
         } else if (condition >= 2) {
-            result = search(root->right, id, condition);
+            result = search(root->right, id, condition, firstSearch);
         }
 
         if (result != NULL) return result;
     }
 
-    result = search(root->left, id, condition);
+    result = search(root->left, id, condition,firstSearch);
     if (result != NULL) return result;
 
-    return search(root->right, id, condition);
+    return search(root->right, id, condition,firstSearch);
 }

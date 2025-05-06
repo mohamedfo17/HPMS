@@ -24,25 +24,11 @@ void addPatientToDepa(patient* patient) {
     departments[patient->department].patients[departments[patient->department].numPat] = patient;
     departments[patient->department].numPat++;
 }
-char* departmentToString(department dept) {
-    static char deptStr[20]; 
-    
+const char* departmentToString(department dept) {
     switch (dept) {
-        case lab:
-            strcpy(deptStr, "Lab");
-            break;
-        case cardiology:
-            strcpy(deptStr, "Cardiology");
-            break;
-        case physiology:
-            strcpy(deptStr, "Physiology");
-            break;
-        case emergency:
-            strcpy(deptStr, "Emergency");
-            break;
-        default:
-            strcpy(deptStr, "Unknown department");
-    }
-    
-    return deptStr;
-}
+        case lab: return "Lab";
+        case cardiology: return "Cardiology";
+        case physiology: return "Physiology";
+        case emergency: return "Emergency";
+        default: return "Unknown";
+    };
