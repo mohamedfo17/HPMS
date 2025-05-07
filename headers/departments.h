@@ -1,6 +1,5 @@
 #ifndef DEPARTMENTS_H     
 #define DEPARTMENTS_H
-#include "patients.h"
 
 // Forward declarations
 typedef struct doctor doctor;
@@ -22,5 +21,5 @@ typedef struct {
 
 void addDocToDepa(doctor* doc);
 void addPatientToDepa(patient* patient);
-void departmentToString(department department);
+const char* departmentToString(department department);
 #endif

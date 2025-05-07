@@ -19,4 +19,11 @@ void editPatientNav();
 void viewPatientNav();
 void deletePatientNav();
 
+
+//
+void addDoctorNav();
+void editDoctorNav();
+void viewDoctorNav();
+void deleteDoctorNav();
+
 #endif

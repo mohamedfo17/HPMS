@@ -1,19 +1,20 @@
 #ifndef TREEPAT_H
 #define TREEPAT_H
 #include "patients.h"
+struct patient;
 
-struct Node {
+typedef struct TreeNodePat {
     char data[14];
-    patient *patient;
-    struct Node* left;
-    struct Node* right;
-};
-typedef struct Node TreeNode;
+    struct patient *patient;
+    struct TreeNodePat* left;   // Changed TreeNode to TreeNodePat
+    struct TreeNodePat* right;  // Changed TreeNode to TreeNodePat
+} TreeNodePat;                  // Changed typedef name to match struct name
 
-TreeNode createNode(char data[14]);
-TreeNode insertTree(TreeNode *root, char data[14], condition condition);
-TreeNode search(TreeNode *root, char data[14]);
-void inorderTraversal(TreeNode *root);
-TreeNode deleteNode(TreeNode *root, char data[14]);
-
+// Update all function signatures to use TreeNodePat instead of TreeNode
+TreeNodePat* createNodePat(char data[14],struct patient *patient);
+TreeNodePat* insertTreePat(TreeNodePat *root,struct patient *patient, char data[14], condition condition, int *firstInser, int *flip);
+struct patient* searchPat(TreeNodePat *root, char id[14], condition condition, int *firstSearch);
+//void inorderTraversal(TreeNodePat *root);
+TreeNodePat* deleteNodePat(TreeNodePat* root, char data[14], condition condition, int *firstSearch);
+TreeNodePat* findMinPat(TreeNodePat* root);
 #endif

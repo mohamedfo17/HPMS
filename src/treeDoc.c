@@ -95,16 +95,16 @@ TreeNode* deleteNode(TreeNode* root,  char data[14], rank rank, int *firstSearch
 }
 
 // Search for a doctor node by ID
-TreeNode* search(TreeNode *root, char id[14], rank rank, int *firstSearch) {
+doctor* search(TreeNode *root, char id[14], rank rank, int *firstSearch) {
     if (root == NULL) {
         return NULL;
     }
 
     if (strcmp(root->data, id) == 0) {
-        return root;
+        return root->doctor;
     }
 
-    TreeNode *result = NULL;
+    doctor *result = NULL;
 
     if (*firstSearch == 0) {
         *firstSearch = 1;

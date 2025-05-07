@@ -5,6 +5,9 @@
         "stdio.h": "c",
         "nav.h": "c",
         "doctors.h": "c",
-        "patients.h": "c"
+        "patients.h": "c",
+        "departments.h": "c",
+        "treedoc.h": "c",
+        "treepat.h": "c"
     }
 }

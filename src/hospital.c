@@ -1,7 +1,7 @@
-#include "departments.c"
+#include "../headers/departments.h"
 #include  "../headers/hospital.h"
 
-void showHospitalStructureNav(){
+/*void showHospitalStructureNav(){
     printf("Hospital Structure:\n");
     printf("1. Departments\n");
     printf("2. Balance\n");
@@ -55,4 +55,4 @@ void showSurgeryRooms(){
     printf("busy surgery rooms are %d" );//complete it
 
 };
-void showPharmacy(){};
+void showPharmacy(){};*/

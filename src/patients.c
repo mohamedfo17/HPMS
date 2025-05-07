@@ -1,20 +1,23 @@
 #include "../headers/patients.h"
-#include "doctors.c"
+#include "../headers/treePat.h"
+#include "../headers/departments.h"
+
+
+#include "../headers/doctors.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "treePat.c"
  int patientNum = 0; 
- int n = 0;
-int *firstInsert = &n;
-int f = 0;
-int *flip = &f;
-int g = 0;
-int *firstSearch = &g;
+ int np = 0;
+int *firstInsertP = &np;
+int fP = 0;
+int *flipP = &fP;
+int gP = 0;
+int *firstSearchP = &gP;
 patient* patients[200];  // Array of pointers to patient structs
-TreeNode *rootEmePat=NULL;
-TreeNode *rootCarPat=NULL;
-TreeNode *rootPhyPat=NULL;
+TreeNodePat *rootEmePat=NULL;
+TreeNodePat *rootCarPat=NULL;
+TreeNodePat *rootPhyPat=NULL;
 void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department) {
     patient *newPatient = (patient*)malloc(sizeof(patient));
     if (newPatient==NULL)
@@ -29,32 +32,44 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     newPatient->age = age;
     newPatient->condition = condition;
     newPatient->department = department;
-    newPatient->assignedDoc = assignDoc(newPatient);
+   // newPatient->assignedDoc = assignDoc(newPatient);
     
     initId(newPatient->id, name, age, condition, patientNum);
     patients[patientNum] = newPatient;
     addPatientToDepa(newPatient);
     if (newPatient->department == 0) {
-        rootEmePat = insertTree(rootEmePat,newPatient, newPatient->id, condition,firstInsert,flip);
-        *firstInsert=1;
+        rootEmePat = insertTreePat(rootEmePat,newPatient, newPatient->id, condition,firstInsertP,flipP);
+        *firstInsertP=1;
     } else if (newPatient->department == 1) {
-        rootCarPat = insertTree(rootCarPat,newPatient, newPatient->id, condition,firstInsert,flip);
-        *firstInsert=1;
+        rootCarPat = insertTreePat(rootCarPat,newPatient, newPatient->id, condition,firstInsertP,flipP);
+        *firstInsertP=1;
     } else if (newPatient->department == 2) {
-        rootPhyPat = insertTree(rootPhyPat,newPatient, newPatient->id, condition,firstInsert,flip);
-        *firstInsert=1;
+        rootPhyPat = insertTreePat(rootPhyPat,newPatient, newPatient->id, condition,firstInsertP,flipP);
+        *firstInsertP=1;
     } ;
     patientNum++;
         printf("Patient added successfully!\n");
+        printf("Patient Id is %s\n",newPatient->id);
+
 
 }
 
 void viewAllPatients(){
+    printf("1-view only names\n-2view names and ids");
+    int choice;
+    scanf("%d", &choice);
+    if (choice==1)
+    {
+   
     for (int i = 0; i < patientNum; i++)
     {
         printf("-The patient number %d is %s\n",i+1,patients[i]->name);
-    }
-    managePatients();
+    }} else if(choice==2){
+        for (int i = 0; i < patientNum; i++)
+    {
+            printf("-The patient number %d is %s\n his id is %s\n",i+1,patients[i]->name,patients[i]->id);
+        }}
+    //manage patients
     
 }
 void updatePatientName(char patientID[14],char name[30]){
@@ -82,27 +97,27 @@ char* conditionToString(condition cond) {
     
     return condStr;
 }
-TreeNode* findPatientById(char id[14],condition searchCondition) {
-    TreeNode* foundNode = NULL;
+patient* findPatientById(char id[14],condition searchCondition) {
+    patient* foundNode = NULL;
     if (rootEmePat != NULL) {
-        foundNode = search(rootEmePat, id, searchCondition, firstSearch);
+        foundNode = searchPat(rootEmePat, id, searchCondition, firstSearchP);
     }
     if (foundNode == NULL && rootCarPat != NULL) {
-        foundNode = search(rootCarPat, id, searchCondition, firstSearch);
+        foundNode = searchPat(rootCarPat, id, searchCondition, firstSearchP);
     }
     if (foundNode == NULL && rootPhyPat != NULL) {
-        foundNode = search(rootPhyPat, id, searchCondition, firstSearch);
+        foundNode = searchPat(rootPhyPat, id, searchCondition, firstSearchP);
     }
     return foundNode;
 
 }
 void deletePat(char id[14],condition searchCondition,department searchDepartment) {
-    TreeNode* foundNode = NULL;
+    TreeNodePat* foundNode = NULL;
     if (searchDepartment == 0) {
-        rootEmePat = deleteNode(rootEmePat, foundNode->patient, id, searchCondition, firstSearch);
+        rootEmePat = deleteNodePat(rootEmePat, id, searchCondition, firstSearchP);
     } else if (searchDepartment == 1) {
-        rootCarPat = deleteNode(rootCarPat, foundNode->patient, id, searchCondition, firstSearch);
+        rootCarPat = deleteNodePat(rootCarPat, id, searchCondition, firstSearchP);
     } else if (searchDepartment == 2) {
-        rootPhyPat = deleteNode(rootPhyPat, foundNode->patient, id, searchCondition, firstSearch);
+        rootPhyPat = deleteNodePat(rootPhyPat, id, searchCondition, firstSearchP);
     }
 }

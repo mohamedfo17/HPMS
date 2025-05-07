@@ -2,102 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "patients.c"
- void homePage() {
-    printf("Choose an option:\n");
-    printf("1. Manage Patients\n");
-    printf("2. Manage Doctors\n");
-    printf("3. Discharge Patient\n");
-    printf("4. View Waiting Queue\n");
-    printf("5. Add Patient to Queue\n");
-    printf("6. Undo Last Discharge\n");
-    printf("7. Search Patient in Directory Tree\n");
-    printf("8. View Hospital Structure Tree\n");
-    printf("9. Save Data to File\n");
-    printf("10. Load Data from File\n");
-    printf("11. Exit\n");
-    int n;
-    scanf("%d",&n);
-    switch (n)
-    {
-    case 1:
-        managePatients();
-        break;
-    case 2:
-        manageDoctors();
-        break;
-    case 3:
-        dischargePatient();
-        break;
-    case 4:
-        viewWaitingQueue();
-        break;
-    case 5:
-        addPatientToQueue();
-        break;
-    case 6:
-        undoLastDischarge();
-        break;
-    case 7:
-        searchPatientInTree();
-        break;
-    case 8:
-    showHospitalStructureNav();
-        break;
-    case 9:
-        saveDataToFile();
-        break;
-    case 10:
-        loadDataFromFile();
-        break;
-    case 11:
-        return 0;
-        break;
-    default:
-        printf("Invalid option! Please try again.\n");
-        homePage();  
-        break;
-    }
-}
-void managePatients() {
-    printf("\n--- Patient Management ---\n");
-    printf("1. Add Patient\n");
-    printf("2. Edit Patient\n");
-    printf("3. View Patient\n");
-    printf("4. Delete Patient\n");
-    printf("5. View All Patients\n");
-    printf("6. Back\n");
-    printf("Choose an option: ");
-    
-    int choice;
-    scanf("%d", &choice);
-    
-    switch (choice) {
-    case 1:
-        addPatientNav();
-        break;
-    case 2:
-        editPatientNav();
-        break;
-    case 3:
-        viewPatientNav();
-        break;
-    case 4:
-        deletePatientNav();
-        break;
-    case 5:
-        viewAllPatients();
-        break;
-    case 6:
-        homePage();  // Return to main menu
-        break;
-    default:
-        printf("Invalid option! Please try again.\n");
-        managePatients();  
-        break;
-    }
+#include "../headers/patients.h"
+#include "../headers/doctors.h"
 
- }
+ 
+
 void addPatientNav() {
     char name[30];
     int age;
@@ -186,7 +95,7 @@ void addPatientNav() {
     addPatient(name, age, medicalCase, address, patientCondition, patientDepartment);
     
 }
-void editPatientNav() {
+/*void editPatientNav() {
     int patientID;
     int editChoice;
     char name[30];
@@ -365,11 +274,19 @@ void editPatientNav() {
     }
     
     printf("Patient information updated successfully!\n");
-}
+}*/
 void deletePatientNav(){
     printf("enter id of patient you want to delete\n and his condition \n and his department\n");
-    char id[14];
-    fgets(id,sizeof(id),stdin);
+    char id[15];
+    int ch;
+while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
+    fgets(id, sizeof(id), stdin);
+    
+    // Remove newline if present
+    size_t len = strlen(id);
+    if (len > 0 && id[len - 1] == '\n') {
+        id[len - 1] = '\0';};
     condition deleteCondition;
     scanf("%d", &deleteCondition);
     department deleteDepartment;
@@ -377,16 +294,25 @@ void deletePatientNav(){
     deletePat(id,deleteCondition,deleteDepartment);
 };
 void viewPatientNav(){
-    printf("enter id of patient you want to view\n and his condition \n and his department\n");
-    char id[14];
-    fgets(id,sizeof(id),stdin);
+    printf("enter id of patient you want to view\n and his condition \n ");
+    char id[15];
+    int ch;
+while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
+    fgets(id, sizeof(id), stdin);
+    
+    // Remove newline if present
+    size_t len = strlen(id);
+    if (len > 0 && id[len - 1] == '\n') {
+        id[len - 1] = '\0';
+    }
     condition searchCondition;
+    printf("we here");
     scanf("%d", &searchCondition);
-    department searchDepartment;
-    scanf("%d", &searchDepartment);
+    
 
     //find patient
-    patient *patient = findPatientById(id,searchCondition,searchDepartment);
+    patient *patient = findPatientById(id,searchCondition);
     if (patient->id == NULL) {
         printf("No patient found with ID: %s\n", id);
         return;
@@ -403,44 +329,7 @@ void viewPatientNav(){
 
 };
 
-void manageDoctors() {
-    printf("\n--- Doctor Management ---\n");
-    printf("1. Add Doctor\n");
-    printf("2. Edit Doctor\n");
-    printf("3. View Doctor\n");
-    printf("4. Delete Doctor\n");
-    printf("5. View All Doctors\n");
-    printf("6. Back\n");
-    printf("Choose an option: ");
-    
-    int choice;
-    scanf("%d", &choice);
-    
-    switch (choice) {
-    case 1:
-        addDoctorNav();
-        break;
-    case 2:
-        editDoctorNav();
-        break;
-    case 3:
-        viewDoctorNav();
-        break;
-    case 4:
-        deleteDoctorNav();
-        break;
-    case 5:
-        viewAllDoctors();
-        break;
-    case 6:
-        homePage();  // Return to main menu
-        break;
-    default:
-        printf("Invalid option! Please try again.\n");
-        manageDoctors();  
-        break;
-    }
-}
+
 void addDoctorNav() {
     char name[30];
     int age;
@@ -494,7 +383,7 @@ void addDoctorNav() {
             doctorRank = high;
             break;
         case 5:
-            doctorRank = cheif;
+            doctorRank = chief;
             break;
         case 6:
             doctorRank = president;
@@ -516,11 +405,18 @@ void addDoctorNav() {
 }
 //edit doctors nav is requiered;
 void deleteDoctorNav() {
-    printf("Enter the ID of the doctor you want to delete,\nfollowed by their rank:\n");
+    printf("Enter the ID of the doctor you want to delete,\nfollowed by their rank:\n and department \n");
 
-    char id[14];
+    char id[15];
+    int ch;
+while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
     fgets(id, sizeof(id), stdin);
-    id[strcspn(id, "\n")] = 0; // Remove newline character if present
+    
+    // Remove newline if present
+    size_t len = strlen(id);
+    if (len > 0 && id[len - 1] == '\n') {
+        id[len - 1] = '\0';}
 
     rank deleteRank;
     scanf("%d", &deleteRank);
@@ -529,20 +425,26 @@ void deleteDoctorNav() {
     deleteDoc(id,deleteDepartment, deleteRank);
 }
 void viewDoctorNav() {
-    printf("Enter the ID of the doctor you want to view\nand their rank and department:\n");
+    printf("Enter the ID of the doctor you want to view\n");
 
-    char id[14];
+    char id[15];
+    int ch;
+while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
     fgets(id, sizeof(id), stdin);
-    id[strcspn(id, "\n")] = 0; // Remove newline character
+    
+    // Remove newline if present
+    size_t len = strlen(id);
+    if (len > 0 && id[len - 1] == '\n') {
+        id[len - 1] = '\0';}
 
     rank searchRank;
     scanf("%d", &searchRank);
 
-    department searchDepartment;
-    scanf("%d", &searchDepartment);
+   
 
     // Find doctor
-    doctor *doc = findDoctorById(id, searchRank, searchDepartment);
+    doctor *doc = findDocById(id, searchRank);
     if (doc == NULL || doc->id == NULL) {
         printf("No doctor found with ID: %s\n", id);
         return;
@@ -587,3 +489,136 @@ void viewDoctorNav() {
 void undoLastDischarge(){
 
 };*/
+void manageDoctors() {
+    printf("\n--- Doctor Management ---\n");
+    printf("1. Add Doctor\n");
+    printf("2. Edit Doctor\n");
+    printf("3. View Doctor\n");
+    printf("4. Delete Doctor\n");
+    printf("5. View All Doctors\n");
+    printf("6. Back\n");
+    printf("Choose an option: ");
+    
+    int choice;
+    scanf("%d", &choice);
+    
+    switch (choice) {
+    case 1:
+        addDoctorNav();
+        break;
+  /* case 2:
+        editDoctorNav();
+        break;*/ 
+    case 3:
+        viewDoctorNav();
+        break;
+    case 4:
+        deleteDoctorNav();
+        break;
+    case 5:
+        viewAllDoctors();
+        break;
+    case 6:
+        homePage();  // Return to main menu
+        break;
+    default:
+        printf("Invalid option! Please try again.\n");
+        manageDoctors();  
+        break;
+    }
+}
+void managePatients() {
+    printf("\n--- Patient Management ---\n");
+    printf("1. Add Patient\n");
+    printf("2. Edit Patient\n");
+    printf("3. View Patient\n");
+    printf("4. Delete Patient\n");
+    printf("5. View All Patients\n");
+    printf("6. Back\n");
+    printf("Choose an option: ");
+    
+    int choice;
+    scanf("%d", &choice);
+    
+    switch (choice) {
+    case 1:
+        addPatientNav();
+        break;
+  /*  case 2:
+        editPatientNav();
+        break;*/
+    case 3:
+        viewPatientNav();
+        break;
+    case 4:
+        deletePatientNav();
+        break;
+    case 5:
+        viewAllPatients();
+        break;
+    case 6:
+        homePage();  // Return to main menu
+        break;
+    default:
+        printf("Invalid option! Please try again.\n");
+        managePatients();  
+        break;
+    }
+
+ }
+ void homePage() {
+    printf("Choose an option:\n");
+    printf("1. Manage Patients\n");
+    printf("2. Manage Doctors\n");
+    printf("3. Discharge Patient\n");
+    printf("4. View Waiting Queue\n");
+    printf("5. Add Patient to Queue\n");
+    printf("6. Undo Last Discharge\n");
+    printf("7. Search Patient in Directory Tree\n");
+    printf("8. View Hospital Structure Tree\n");
+    printf("9. Save Data to File\n");
+    printf("10. Load Data from File\n");
+    printf("11. Exit\n");
+    int n;
+    scanf("%d",&n);
+    switch (n)
+    {
+    case 1:
+        managePatients();
+        break;
+    case 2:
+        manageDoctors();
+        break;
+   /* case 3:
+        dischargePatient();
+        break;
+    case 4:
+        viewWaitingQueue();
+        break;
+    case 5:
+        addPatientToQueue();
+        break;
+    case 6:
+        undoLastDischarge();
+        break;
+    case 7:
+        searchPatientInTree();
+        break;
+    case 8:
+    showHospitalStructureNav();
+        break;
+    case 9:
+        saveDataToFile();
+        break;
+    case 10:
+        loadDataFromFile();
+        break;*/
+    case 11:
+        return ;
+        break;
+    default:
+        printf("Invalid option! Please try again.\n");
+        homePage();  
+        break;
+    }
+}

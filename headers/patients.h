@@ -6,6 +6,7 @@
 #include "departments.h"
 
 
+
 typedef enum condition {
     urgence,danger,normal,visit
 } condition;
@@ -22,7 +23,7 @@ typedef struct patient
     char id[14];
 } patient;
 
-void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition,department department,doctor assignedDoc);
+void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department);
 
 
 
@@ -35,11 +36,10 @@ void updatePatientAddress(char patientID[14],char address[150]);
 void updatePatientCondition(char patientID[14],condition condition);
 void updatePatientDepartment(char patientID[14],department department);
 void updatePatient(char patientID[30],char name[30],int age,char medicalCase[200],char address[150],condition condition,department department);
-char conditionToString(condition condition);
+char* conditionToString(condition cond);
+patient* findPatientById(char id[14],condition searchCondition);
 
-TreeNode* findPatientById(char id[14],condition searchCondition);
-
-
+void deletePat(char id[14],condition searchCondition,department searchDepartment);
 
 
 

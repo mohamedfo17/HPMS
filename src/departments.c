@@ -24,7 +24,7 @@ void addPatientToDepa(patient* patient) {
     departments[patient->department].patients[departments[patient->department].numPat] = patient;
     departments[patient->department].numPat++;
 }
-const char* departmentToString(department dept) {
+ const char* departmentToString(department dept) {
     switch (dept) {
         case lab: return "Lab";
         case cardiology: return "Cardiology";
@@ -32,3 +32,4 @@ const char* departmentToString(department dept) {
         case emergency: return "Emergency";
         default: return "Unknown";
     };
+ }

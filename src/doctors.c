@@ -1,5 +1,8 @@
 #include "../headers/doctors.h"
-#include "treeDoc.c"
+#include "../headers/treeDoc.h"
+#include "../headers/departments.h"
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -16,29 +19,34 @@ int *firstSearch=&g;
 int employeNum = 0; 
 doctor* doctors[200];  // Array of pointers to doctor structs
 
-void initId(char id[14], const char name[30], int age, rank rank, int employeNum) {
-    // Copy first 5 chars of name
+#include <stdio.h>
+#include <string.h>
+
+void initId(char id[15], const char name[30], int age, rank rankValue, int employeeNum) {
+    // Copy first 5 letters of name or fill with '_'
     for (int i = 0; i < 5; i++) {
-        id[i] = name[i];
+        id[i] = (name[i] != '\0') ? name[i] : '_';
     }
-    
-    
-    for (int i = 5; i < 8; i++) {
-        id[i] = (age % 10) ;
-        age = age / 10;
-    }
-    
-    
-    id[8] = rank ;
-    
-    // Convert employeNum to 5 chars 
-    for (int i = 9; i < 14; i++) {
-        id[i] = (employeNum % 10) + '0';
-        employeNum = employeNum / 10;
-    }
-    
-    id[13] = '\0';  // Null terminate the string
+
+    // Add age as 3 characters
+    id[5] = (age / 100) % 10 + '0';
+    id[6] = (age / 10) % 10 + '0';
+    id[7] = age % 10 + '0';
+
+    // Add rank (convert enum to char)
+    id[8] = rankValue + '0';
+
+    // Add employee number as 5 characters
+    id[9]  = (employeeNum / 10000) % 10 + '0';
+    id[10] = (employeeNum / 1000) % 10 + '0';
+    id[11] = (employeeNum / 100) % 10 + '0';
+    id[12] = (employeeNum / 10) % 10 + '0';
+    id[13] = employeeNum % 10 + '0';
+
+    // Null-terminate
+    id[14] = '\0';
 }
+
 
 void addDoctor(char name[30], int age, char speciality[30], char address[150], rank rank,department department) {
     doctor *newDoc = (doctor*)malloc(sizeof(doctor));
@@ -59,7 +67,7 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
         case low: newDoc->maxPatients = 8; break;       // Low handles visit and normal
         case med: newDoc->maxPatients = 14; break;      // Med handles all except urgence
         case high: newDoc->maxPatients = 10; break;     // High handles danger and urgence
-        case cheif: newDoc->maxPatients = 5; break;     // Chief handles urgence only
+        case chief: newDoc->maxPatients = 5; break;     // Chief handles urgence only
         case president: newDoc->maxPatients = 3; break; // President handles special cases
         default:;//;
     }
@@ -77,6 +85,7 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
         *firstInsert=1;    
     } ;
     employeNum++;
+    printf("doctor Id is %s\n",newDoc->id);
 }
 
 /*doctor* assignDoc(patient *patient){
@@ -122,8 +131,8 @@ int maxPatientsCheck(doctor doctor) {
 
     return 0; // Default return value
 }
-TreeNode* findDocById(char id[14],condition searchRank) {
-    TreeNode* foundNode = NULL;
+doctor* findDocById(char id[14],rank searchRank) {
+    doctor* foundNode = NULL;
     if (rootEmeDoc != NULL) {
         foundNode = search(rootEmeDoc, id, searchRank, firstSearch);
     }
@@ -145,4 +154,36 @@ void deleteDoc(char id[14], department searchDepartment, rank searchRank) {
     } else if (searchDepartment == 2) {
         rootPhyDoc = deleteNode(rootPhyDoc, id, searchRank, firstSearch);
     }
+}
+const char *rankToString(rank rank) {
+    switch (rank) {
+        case intern:    return "intern";
+        case low:       return "low";
+        case med:       return "medium";
+        case high:      return "high";
+        case chief:     return "chief";
+        case president: return "president";
+        default:        return "unknown";
+    }
+}
+
+void viewAllDoctors(){
+    printf("1-view only names\n-2view names and ids");
+    int choice;
+    scanf("%d", &choice);
+    if (choice==1)
+    {
+   
+    for (int i = 0; i < employeNum; i++)
+    {
+        printf("-The doctor number %d is %s\n",i+1,doctors[i]->name);
+    }}
+    else if(choice==2){
+        for (int i = 0; i < employeNum; i++)
+        {
+            printf("-The doctor number %d is %s\n his id is %s\n",i+1,doctors[i]->name,doctors[i]->id);
+        }}
+    ;
+    //manage patients
+    
 }
