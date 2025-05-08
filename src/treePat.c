@@ -20,9 +20,9 @@ TreeNodePat* insertTreePat(TreeNodePat *root, patient *patient, char data[14], c
     }
     
     if (*firstInser == 0) {          
-        if (condition == 0 || condition == 1) {
+        if (condition == 2 || condition == 1) {
             root->right = insertTreePat(root->left, patient, data, condition, firstInser, flip);
-        } else if (condition >= 2) {
+        } else if (condition >= 3) {
             root->left = insertTreePat(root->right, patient, data, condition, firstInser, flip);
         }
     } else if (*firstInser == 1) {
@@ -74,7 +74,7 @@ TreeNodePat* deleteNodePat(TreeNodePat* root, char data[14], condition condition
     } else {
         if (*firstSearch == 0) {
             *firstSearch = 1;
-            if (condition == 0 || condition == 1) {
+            if (condition == 2 || condition == 1) {
                 root->left = deleteNodePat(root->left, data, condition, firstSearch);
             } else {
                 root->right = deleteNodePat(root->right, data, condition, firstSearch);
@@ -102,7 +102,7 @@ patient* searchPat(TreeNodePat *root, char id[14], condition condition, int *fir
     if (*firstSearch == 0) {
         *firstSearch = 1;
         
-        if (condition == 0 || condition == 1) {
+        if (condition == 2 || condition == 1) {
             result = searchPat(root->left, id, condition, firstSearch);
         } else if (condition >= 2) {
             result = searchPat(root->right, id, condition, firstSearch);

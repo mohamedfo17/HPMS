@@ -7,29 +7,32 @@
 
 // Statically initialize departments
 departmentInfo departments[4] = {
-    {lab, {NULL}, {NULL}, 0, 0},
-    {cardiology, {NULL}, {NULL}, 0, 0},
-    {physiology, {NULL}, {NULL}, 0, 0},
-    {emergency, {NULL}, {NULL}, 0, 0,10}
+    {lab, {NULL}, {NULL}, 0, 0,5,10000},
+    {cardiology, {NULL}, {NULL}, 0, 0,5,10000},
+    {physiology, {NULL}, {NULL}, 0, 0,5,10000},
+    {emergency, {NULL}, {NULL}, 0, 0,10,10000}
 };
 
 void addDocToDepa(doctor* doc) {
     // Add doctor to department at the next available position
-    departments[doc->department].doctors[departments[doc->department].numDoc] = doc;
-    departments[doc->department].numDoc++;
+    int depIndex = doc->department - 1;
+    departments[depIndex].doctors[departments[depIndex].numDoc] = doc;
+    departments[depIndex].numDoc++;
+    
 }
 
 void addPatientToDepa(patient* patient) {
     // Add patient to department
-    departments[patient->department].patients[departments[patient->department].numPat] = patient;
-    departments[patient->department].numPat++;
+    int depIndex = patient->department - 1;
+    departments[depIndex].patients[departments[depIndex].numPat] = patient;
+    departments[depIndex].numPat++;
 }
  const char* departmentToString(department dept) {
     switch (dept) {
-        case lab: return "Lab";
-        case cardiology: return "Cardiology";
-        case physiology: return "Physiology";
-        case emergency: return "Emergency";
+        case 1: return "Lab";
+        case 2: return "Cardiology";
+        case 3: return "Physiology";
+        case 4: return "Emergency";
         default: return "Unknown";
     };
  }

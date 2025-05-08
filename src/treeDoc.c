@@ -26,7 +26,7 @@ TreeNode* insertTree(TreeNode *root, doctor *doctor, char data[14], rank rank, i
     if (*firstInser == 0) {
         *firstInser = 1;
 
-        if (rank == 0 || rank == 1) {
+        if (rank == 2|| rank == 1) {
             root->right = insertTree(root->left, doctor, data, rank, firstInser, flip);
         } else {
             root->left = insertTree(root->right, doctor, data, rank, firstInser, flip);
@@ -80,7 +80,7 @@ TreeNode* deleteNode(TreeNode* root,  char data[14], rank rank, int *firstSearch
     } else {
         if (*firstSearch == 0) {
             *firstSearch = 1;
-            if (rank == 0 || rank == 1) {
+            if (rank == 2 || rank == 1) {
                 root->left = deleteNode(root->left,  data, rank, firstSearch);
             } else {
                 root->right = deleteNode(root->right,  data, rank, firstSearch);
@@ -109,7 +109,7 @@ doctor* search(TreeNode *root, char id[14], rank rank, int *firstSearch) {
     if (*firstSearch == 0) {
         *firstSearch = 1;
 
-        if (rank == 0 || rank == 1) {
+        if (rank == 2 || rank == 1) {
             result = search(root->left, id, rank, firstSearch);
         } else {
             result = search(root->right, id, rank, firstSearch);

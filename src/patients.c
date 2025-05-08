@@ -36,7 +36,7 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     
     initId(newPatient->id, name, age, condition, patientNum);
     patients[patientNum] = newPatient;
-    addPatientToDepa(newPatient);
+    addPatientToDepa(newPatient);//delay here
     if (newPatient->department == 0) {
         rootEmePat = insertTreePat(rootEmePat,newPatient, newPatient->id, condition,firstInsertP,flipP);
         *firstInsertP=1;
@@ -72,9 +72,92 @@ void viewAllPatients(){
     //manage patients
     
 }
-void updatePatientName(char patientID[14],char name[30]){
+void updatePatientName(patient *patient, char name[30]) {
+    strcpy(patient->name, name);
+    printf("Patient name updated to %s\n", name);
+
+}
+void updatePatientAge(patient *patient, int age) {
+patient->age=age;
+printf("Patient age updated to %d\n", age);
+
+}
+void updatePatientMedicalCase(patient *patient,char medicalCase[200])
+ {
+    strcpy(patient->medicalCase, medicalCase);
+    printf("Patient medical case updated to %s\n", medicalCase);
+
+}
+void updatePatientAddress(patient *patient,char address[150])
+ {
+    strcpy(patient->address, address);
+    printf("Patient address updated to %s\n", address);
+
+}
+void updatePatientCondition(patient *patient,condition condition,department department) {
+    deletePat(patient->id,patient->condition,patient->department);
+   
+
+    patient->condition = condition;
+    if (patient->department == 0) {
+        rootEmePat = insertTreePat(rootEmePat,patient, patient->id,patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } else if (patient->department == 1) {
+        rootCarPat = insertTreePat(rootCarPat,patient, patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } else if (patient->department == 2) {
+        rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } ;
+    printf("Patient condition updated to %s\n", conditionToString(condition));
+
+}
+void updatePatientDepartment(patient *patient,department department) {
+    deletePat(patient->id,patient->condition,patient->department);
     
-};
+    patient->department = department;
+    if (patient->department == 0) {
+        rootEmePat = insertTreePat(rootEmePat,patient, patient->id,patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } else if (patient->department == 1) {
+        rootCarPat = insertTreePat(rootCarPat,patient, patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } else if (patient->department == 2) {
+        rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } ;
+    printf("Patient department updated to %s\n", departmentToString(department));
+    addPatientToDepa(patient);
+   
+}
+void updatePatient(patient *patient,char name[30],int age,char medicalCase[200],char address[150],condition condition,department department) {
+    deletePat(patient->id,patient->condition,patient->department);
+    
+    strcpy(patient->name, name);
+    patient->age=age;
+    strcpy(patient->medicalCase, medicalCase);
+    strcpy(patient->address, address);
+    patient->condition = condition;
+    patient->department = department;
+    if (patient->department == 0) {
+        rootEmePat = insertTreePat(rootEmePat,patient, patient->id,patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } else if (patient->department == 1) {
+        rootCarPat = insertTreePat(rootCarPat,patient, patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } else if (patient->department == 2) {
+        rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;
+    } ;
+    printf("Patient name updated to %s\n", name);
+    printf("Patient age updated to %d\n", age);
+    printf("Patient medical case updated to %s\n", medicalCase);
+    printf("Patient address updated to %s\n", address);
+    printf("Patient condition updated to %s\n", conditionToString(condition));
+    printf("Patient department updated to %s\n", departmentToString(department));
+    addPatientToDepa(patient);
+    printf("Patient updated successfully!\n");
+}
 char* conditionToString(condition cond) {
     static char condStr[10]; // Static so it persists after function returns
     

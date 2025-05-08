@@ -5,10 +5,9 @@
 #include <stdlib.h>
 #include "patients.h"
 #include "departments.h"
-// Remove this line: #include "treeDoc.h"
 
 typedef enum rankDoc {
-    intern, low, med, high, chief, president  // Fixed typo: cheif -> chief
+    intern=1, low, med, high, chief, president  
 } rank;
 
 typedef struct doctor {
@@ -33,6 +32,12 @@ doctor* findDocById(char id[14], rank searchRank);
 const char *rankToString(rank rank) ;
 void deleteDoc(char id[14], department searchDepartment, rank searchRank);
 void viewAllDoctors();
-
-
+void updateDoctorName(doctor *doctor, char name[30]);
+void updateDoctorAge(doctor *doctor, int age);
+void updateDoctorSpecialty(doctor *doctor, char specialty[200]);
+void updateDoctorAddress(doctor *doctor, char address[150]);
+void updateDoctorRank(doctor *doctor, rank rank, department department);
+void updateDoctorDepartment(doctor *doctor, department department);
+void updateDoctor(doctor *doctor, char name[30], int age, char specialty[200], char address[150], rank rank, department department);
+int checkPositionAvailibility(rank rank,department department);
 #endif

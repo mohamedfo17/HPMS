@@ -73,7 +73,7 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     }
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
-    //addDocToDepa(newDoc);
+    addDocToDepa(newDoc);
     if (newDoc->department == 0) {
         rootEmeDoc = insertTree(rootEmeDoc, newDoc,newDoc->id, rank,firstInsert,flip);
         *firstInsert=1;
@@ -186,4 +186,110 @@ void viewAllDoctors(){
     ;
     //manage patients
     
+}
+void updateDoctorName(doctor *doctor, char name[30]) {
+    strcpy(doctor->name, name);
+    printf("Doctor name updated to %s\n", name);
+}
+
+void updateDoctorAge(doctor *doctor, int age) {
+    doctor->age = age;
+    printf("Doctor age updated to %d\n", age);
+}
+
+void updateDoctorSpecialty(doctor *doctor, char specialty[200]) {
+    strcpy(doctor->speciality, specialty);
+    printf("Doctor specialty updated to %s\n", specialty);
+}
+
+void updateDoctorAddress(doctor *doctor, char address[150]) {
+    strcpy(doctor->address, address);
+    printf("Doctor address updated to %s\n", address);
+}
+
+void updateDoctorRank(doctor *doctor, rank rank, department department) {
+    deleteDoc(doctor->id, doctor->rank, doctor->department);
+
+    doctor->rank = rank;
+
+    if (doctor->department == 0) {
+        rootEmeDoc = insertTree(rootEmeDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    } else if (doctor->department == 1) {
+        rootCarDoc = insertTree(rootCarDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    } else if (doctor->department == 2) {
+        rootPhyDoc = insertTree(rootPhyDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    }
+
+    printf("Doctor rank updated to %s\n", rankToString(rank));
+}
+
+void updateDoctorDepartment(doctor *doctor, department department) {
+    deleteDoc(doctor->id, doctor->rank, doctor->department);
+
+    doctor->department = department;
+
+    if (doctor->department == 0) {
+        rootEmeDoc = insertTree(rootEmeDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    } else if (doctor->department == 1) {
+        rootCarDoc = insertTree(rootCarDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    } else if (doctor->department == 2) {
+        rootPhyDoc = insertTree(rootPhyDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    }
+
+    printf("Doctor department updated to %s\n", departmentToString(department));
+    addDocToDepa(doctor);
+}
+
+void updateDoctor(doctor *doctor, char name[30], int age, char specialty[200], char address[150], rank rank, department department) {
+    deleteDoc(doctor->id, doctor->rank, doctor->department);
+
+    strcpy(doctor->name, name);
+    doctor->age = age;
+    strcpy(doctor->speciality, specialty);
+    strcpy(doctor->address, address);
+    doctor->rank = rank;
+    doctor->department = department;
+
+    if (doctor->department == 0) {
+        rootEmeDoc = insertTree(rootEmeDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    } else if (doctor->department == 1) {
+        rootCarDoc = insertTree(rootCarDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    } else if (doctor->department == 2) {
+        rootPhyDoc = insertTree(rootPhyDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
+        *firstInsert = 1;
+    }
+
+    printf("Doctor name updated to %s\n", name);
+    printf("Doctor age updated to %d\n", age);
+    printf("Doctor specialty updated to %s\n", specialty);
+    printf("Doctor address updated to %s\n", address);
+    printf("Doctor rank updated to %s\n", rankToString(rank));
+    printf("Doctor department updated to %s\n", departmentToString(department));
+    addDocToDepa(doctor);
+    printf("Doctor updated successfully!\n");
+}
+int checkPositionAvailibility(rank rank, department department) {
+    for (int i = 0; i < employeNum; i++) {
+        if (doctors[i] == NULL) continue;
+
+        if (rank == president) {
+            if (doctors[i]->rank == president) {
+                return 0; // Only one president allowed
+            }
+        } else if (rank == chief) {
+            if (doctors[i]->rank == chief && doctors[i]->department == department) {
+                return 0; // Only one chief per department allowed
+            }
+        }
+    }
+
+    return 1; // Available
 }

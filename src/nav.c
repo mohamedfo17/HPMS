@@ -4,6 +4,8 @@
 #include <string.h>
 #include "../headers/patients.h"
 #include "../headers/doctors.h"
+#include "../headers/hospital.h"
+
 
  
 
@@ -95,8 +97,7 @@ void addPatientNav() {
     addPatient(name, age, medicalCase, address, patientCondition, patientDepartment);
     
 }
-/*void editPatientNav() {
-    int patientID;
+void editPatientNav() {
     int editChoice;
     char name[30];
     int age;
@@ -106,14 +107,26 @@ void addPatientNav() {
     department patientDepartment;
     int conditionChoice, departmentChoice;
     
-    printf("Enter the Patient ID to edit: ");
-    scanf("%d", &patientID);
-    while (getchar() != '\n'); // Clear input buffer
+    printf("enter id of patient you want to edit\n and his condition \n ");
+    char id[15];
+    int ch;
+while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
+    fgets(id, sizeof(id), stdin);
     
-    // Assume you have a function to check if the patient exists
-    // If the patient doesn't exist, return
-    if (!patientExists(patientID)) {
-        printf("Patient with ID %d does not exist.\n", patientID);
+    // Remove newline if present
+    size_t len = strlen(id);
+    if (len > 0 && id[len - 1] == '\n') {
+        id[len - 1] = '\0';
+    }
+    condition searchCondition;
+    scanf("%d", &searchCondition);
+    
+
+    //find patient
+    patient *patient = findPatientById(id,searchCondition);
+    if (patient->id == NULL) {
+        printf("No patient found with ID: %s\n", id);
         return;
     }
     
@@ -140,28 +153,28 @@ void addPatientNav() {
             printf("Enter new name: ");
             fgets(name, sizeof(name), stdin);
             name[strcspn(name, "\n")] = 0;
-            updatePatientName(patientID, name);
+            updatePatientName(patient, name);
             break;
             
         case 2: // Edit Age
             printf("Enter new age: ");
             scanf("%d", &age);
             while (getchar() != '\n');
-            updatePatientAge(patientID, age);
+            updatePatientAge(patient, age);
             break;
             
         case 3: // Edit Medical Case
             printf("Enter new medical case: ");
             fgets(medicalCase, sizeof(medicalCase), stdin);
             medicalCase[strcspn(medicalCase, "\n")] = 0;
-            updatePatientMedicalCase(patientID, medicalCase);
+            updatePatientMedicalCase(patient, medicalCase);
             break;
             
         case 4: // Edit Address
             printf("Enter new address: ");
             fgets(address, sizeof(address), stdin);
             address[strcspn(address, "\n")] = 0;
-            updatePatientAddress(patientID, address);
+            updatePatientAddress(patient, address);
             break;
             
         case 5: // Edit Condition
@@ -173,7 +186,7 @@ void addPatientNav() {
             printf("Enter choice (1-4): ");
             scanf("%d", &conditionChoice);
             while (getchar() != '\n');
-            
+         
             switch(conditionChoice) {
                 case 1: patientCondition = urgence; break;
                 case 2: patientCondition = danger; break;
@@ -183,7 +196,7 @@ void addPatientNav() {
                     patientCondition = normal; 
                     printf("Invalid choice, setting to Normal.\n");
             }
-            updatePatientCondition(patientID, patientCondition);
+            updatePatientCondition(patient, patientCondition,patient->department);
             break;
             
         case 6: // Edit Department
@@ -205,7 +218,7 @@ void addPatientNav() {
                     patientDepartment = emergency;
                     printf("Invalid choice, setting to Emergency.\n");
             }
-            updatePatientDepartment(patientID, patientDepartment);
+            updatePatientDepartment(patient, patientDepartment);
             break;
             
         case 7: // Edit All Information
@@ -264,7 +277,7 @@ void addPatientNav() {
             }
             
             // Update all patient information at once
-            updatePatient(patientID, name, age, medicalCase, address, patientCondition, patientDepartment);
+            updatePatient(patient, name, age, medicalCase, address, patientCondition, patientDepartment);
             break;
             
         default:
@@ -274,7 +287,7 @@ void addPatientNav() {
     }
     
     printf("Patient information updated successfully!\n");
-}*/
+}
 void deletePatientNav(){
     printf("enter id of patient you want to delete\n and his condition \n and his department\n");
     char id[15];
@@ -307,7 +320,6 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
         id[len - 1] = '\0';
     }
     condition searchCondition;
-    printf("we here");
     scanf("%d", &searchCondition);
     
 
@@ -367,8 +379,15 @@ void addDoctorNav() {
     printf("   6. President\n");
     printf("Enter choice (1-6): ");
     scanf("%d", &rankChoice);
-
+    printf("6-Select patient department:\n");
+    printf("   1. Lab\n");
+    printf("   2. Cardiology\n");
+    printf("   3. Physiology\n");
+    printf("   4. Emergency\n");
+    printf("Enter choice (1-4): ");
+    scanf("%d", &departmentDoc);
     // Convert the choice to the rank enum
+    if( checkPositionAvailibility( rankChoice, departmentDoc)){
     switch(rankChoice) {
         case 1:
             doctorRank = intern;
@@ -392,16 +411,13 @@ void addDoctorNav() {
             doctorRank = intern; // Default
             printf("Invalid choice, setting to Intern.\n");
     }
-    printf("6-Select patient department:\n");
-    printf("   1. Lab\n");
-    printf("   2. Cardiology\n");
-    printf("   3. Physiology\n");
-    printf("   4. Emergency\n");
-    printf("Enter choice (1-4): ");
-    scanf("%d", &departmentDoc);
+    addDoctor(name, age, specialty, address, doctorRank,departmentDoc);}
+    else{
+        printf("there is no available position for this doctor\n");
+    }
     //try no switch here
     // Call your addDoctor function here (you should have one implemented)
-    addDoctor(name, age, specialty, address, doctorRank,departmentDoc);
+   
 }
 //edit doctors nav is requiered;
 void deleteDoctorNav() {
@@ -459,6 +475,231 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
     printf("Department: %s\n", departmentToString(doc->department)); // Convert department enum to string
     printf("----------------------\n");
 }
+void editDoctorNav() {
+    int editChoice;
+    char name[30];
+    int age;
+    char specialty[200];
+    char address[150];
+    rank doctorRank;
+    department doctorDepartment;
+    int rankChoice, departmentChoice;
+    char id[15];
+
+    printf("Enter rank (1-6): ");
+    if (scanf("%d", &rankChoice) != 1 || rankChoice < 1 || rankChoice > 6) {
+        printf("Invalid rank entered.\n");
+        return;
+    }
+
+    rank searchRank = (rank)rankChoice;
+
+    // Flush stdin before using fgets
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+
+    // Ask for ID
+    printf("Enter ID of doctor you want to edit: ");
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = '\0';
+
+    // Now search
+    doctor *doctor = findDocById(id, searchRank);
+    if (doctor == NULL || doctor->id == NULL) {
+        printf("No doctor found with ID: %s and Rank: %d\n", id, rankChoice);
+        return;
+    }
+
+    
+   
+    
+
+    // Display the edit menu
+    printf("\n--- Edit Doctor Information ---\n");
+    printf("1. Edit Name\n");
+    printf("2. Edit Age\n");
+    printf("3. Edit Specialty\n");
+    printf("4. Edit Address\n");
+    printf("5. Edit Rank\n");
+    printf("6. Edit Department\n");
+    printf("7. Edit All Information\n");
+    printf("0. Cancel\n");
+    printf("Enter your choice: ");
+    scanf("%d", &editChoice);
+    while (getchar() != '\n');
+
+    switch (editChoice) {
+        case 0:
+            printf("Edit cancelled.\n");
+            return;
+
+        case 1:
+            printf("Enter new name: ");
+            fgets(name, sizeof(name), stdin);
+            name[strcspn(name, "\n")] = 0;
+            updateDoctorName(doctor, name);
+            break;
+
+        case 2:
+            printf("Enter new age: ");
+            scanf("%d", &age);
+            while (getchar() != '\n');
+            updateDoctorAge(doctor, age);
+            break;
+
+        case 3:
+            printf("Enter new specialty: ");
+            fgets(specialty, sizeof(specialty), stdin);
+            specialty[strcspn(specialty, "\n")] = 0;
+            updateDoctorSpecialty(doctor, specialty);
+            break;
+
+        case 4:
+            printf("Enter new address: ");
+            fgets(address, sizeof(address), stdin);
+            address[strcspn(address, "\n")] = 0;
+            updateDoctorAddress(doctor, address);
+            break;
+
+        case 5:
+            printf("Select new doctor rank:\n");
+            printf("   1. Intern\n");
+            printf("   2. low\n");
+            printf("   3. Medium\n");
+            printf("   4. High\n");
+            printf("   5. chief\n");
+            printf("   6. President\n");
+
+            printf("Enter choice (1-6): ");
+            scanf("%d", &rankChoice);
+            while (getchar() != '\n');
+            
+            if( checkPositionAvailibility( rankChoice, doctor->department)){
+            switch (rankChoice) {
+                case 1: doctorRank = intern; break;
+                case 2: doctorRank = low; break;
+                case 3: doctorRank = med; break;
+                case 4: doctorRank = high; break;
+                case 5: doctorRank = chief; break;
+                case 6: doctorRank = president; break;
+
+
+                default:
+                    doctorRank = med;
+                    printf("Invalid choice, setting to med.\n");
+            }
+
+          
+
+            updateDoctorRank(doctor, doctorRank,  doctor->department);
+            break;}
+            else{
+                printf("the position is not available\n");
+                break;
+            }
+
+        case 6:
+            printf("Select new doctor department:\n");
+            printf("   1. Lab\n");
+            printf("   2. Cardiology\n");
+            printf("   3. Physiology\n");
+            printf("   4. Emergency\n");
+            printf("Enter choice (1-4): ");
+            scanf("%d", &departmentChoice);
+            while (getchar() != '\n');
+            if( checkPositionAvailibility( doctor->rank, departmentChoice)){
+            switch (departmentChoice) {
+                case 1: doctorDepartment = lab; break;
+                case 2: doctorDepartment = cardiology; break;
+                case 3: doctorDepartment = physiology; break;
+                case 4: doctorDepartment = emergency; break;
+                default:
+                    doctorDepartment = emergency;
+                    printf("Invalid choice, setting to Emergency.\n");
+            }
+
+            updateDoctorDepartment(doctor, doctorDepartment);
+            break;}else{
+                printf("the position is not available in selected department\n");
+                break;
+            }
+
+            case 7:
+            printf("Enter new name: ");
+            fgets(name, sizeof(name), stdin);
+            name[strcspn(name, "\n")] = 0;
+        
+            printf("Enter new age: ");
+            scanf("%d", &age);
+            while (getchar() != '\n');
+        
+            printf("Enter new specialty: ");
+            fgets(specialty, sizeof(specialty), stdin);
+            specialty[strcspn(specialty, "\n")] = 0;
+        
+            printf("Enter new address: ");
+            fgets(address, sizeof(address), stdin);
+            address[strcspn(address, "\n")] = 0;
+        
+            printf("Select new doctor rank:\n");
+            printf("   1. Intern\n");
+            printf("   2. Low\n");
+            printf("   3. Medium\n");
+            printf("   4. High\n");
+            printf("   5. Chief\n");
+            printf("   6. President\n");
+            printf("Enter choice (1-6): ");
+            scanf("%d", &rankChoice);
+            while (getchar() != '\n');
+        
+            switch (rankChoice) {
+                case 1: doctorRank = intern; break;
+                case 2: doctorRank = low; break;
+                case 3: doctorRank = med; break;
+                case 4: doctorRank = high; break;
+                case 5: doctorRank = chief; break;
+                case 6: doctorRank = president; break;
+                default:
+                    printf("Invalid rank choice.\n");
+                    return;
+            }
+        
+            printf("Select new doctor department:\n");
+            printf("   1. Lab\n");
+            printf("   2. Cardiology\n");
+            printf("   3. Physiology\n");
+            printf("   4. Emergency\n");
+            printf("Enter choice (1-4): ");
+            scanf("%d", &departmentChoice);
+            while (getchar() != '\n');
+        
+            switch (departmentChoice) {
+                case 1: doctorDepartment = lab; break;
+                case 2: doctorDepartment = cardiology; break;
+                case 3: doctorDepartment = physiology; break;
+                case 4: doctorDepartment = emergency; break;
+                default:
+                    printf("Invalid department choice.\n");
+                    return;
+            }
+        
+            if (checkPositionAvailibility(doctorRank, doctorDepartment)) {
+                updateDoctor(doctor, name, age, specialty, address, doctorRank, doctorDepartment);
+            } else {
+                printf("The position is not available in the selected department.\n");
+            }
+            break;
+        
+
+        default:
+            printf("Invalid choice.\n");
+            editDoctorNav();
+            return;
+    }
+
+    
+}
+
 
 /*void addPatientToQueue(){
     printf("enter id of patient you want to add to queue");
@@ -506,9 +747,9 @@ void manageDoctors() {
     case 1:
         addDoctorNav();
         break;
-  /* case 2:
+   case 2:
         editDoctorNav();
-        break;*/ 
+        break; 
     case 3:
         viewDoctorNav();
         break;
@@ -544,9 +785,9 @@ void managePatients() {
     case 1:
         addPatientNav();
         break;
-  /*  case 2:
+    case 2:
         editPatientNav();
-        break;*/
+        break;
     case 3:
         viewPatientNav();
         break;
@@ -567,6 +808,8 @@ void managePatients() {
 
  }
  void homePage() {
+    while (1)
+    {
     printf("Choose an option:\n");
     printf("1. Manage Patients\n");
     printf("2. Manage Doctors\n");
@@ -603,22 +846,22 @@ void managePatients() {
         break;
     case 7:
         searchPatientInTree();
-        break;
+        break;*/
     case 8:
     showHospitalStructureNav();
         break;
-    case 9:
+   /* case 9:
         saveDataToFile();
         break;
     case 10:
         loadDataFromFile();
         break;*/
     case 11:
-        return ;
+        exit(0);
         break;
     default:
         printf("Invalid option! Please try again.\n");
         homePage();  
         break;
-    }
+    }}
 }
