@@ -61,9 +61,9 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
    
     newDoc->rank = rank;
     newDoc->department = department;
-
+    newDoc->numPatients = 0;
     switch(rank) {
-        case intern: newDoc->maxPatients = 4; break;    // Interns handle visit cases only
+        case intern: newDoc->maxPatients = 2; break;    // Interns handle visit cases only
         case low: newDoc->maxPatients = 8; break;       // Low handles visit and normal
         case med: newDoc->maxPatients = 14; break;      // Med handles all except urgence
         case high: newDoc->maxPatients = 10; break;     // High handles danger and urgence
@@ -88,46 +88,135 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     printf("doctor Id is %s\n",newDoc->id);
 }
 
-/*doctor* assignDoc(patient *patient){
+doctor* assignDoc(patient *patient){
     doctor *assignedDoc=NULL;
+    int i=0;
     switch (patient->condition)
     {
-    case 0 :
-        //find doctor cheif or high
+    case 1 :
+        //find doctor cheif or high (Danger)
+        i=0;
+        while (i<employeNum)
+        {
+            if ((doctors[i]->rank==chief || doctors[i]->rank==high) && (doctors[i]->department==patient->department))
+            {
+                if (maxPatientsCheck(*doctors[i])==1)
+                {
+                    assignedDoc=doctors[i];
+                    break;
+                }
+            }
+           
+            i++;
+        }
+          if (assignedDoc==NULL)
+          {
+            return NULL;
+        }else{
+            printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
+            assignedDoc->numPatients++;
+            patient->assignedDoc=assignedDoc;
+            return assignedDoc;
+            //add to queue
+          }    
 
-
-        break;
-    case 1:
-        //find doctor normal or low or high worst case intern
         break;
     case 2:
-        //find doctor normal or intern
+        //find doctor normal or low or  (high case)
+        i=0;
+        while (i<employeNum)
+        {
+            if ((doctors[i]->rank==med || doctors[i]->rank==high) && (doctors[i]->department==patient->department))
+            {
+                if (maxPatientsCheck(*doctors[i])==1)
+                {
+                    assignedDoc=doctors[i];
+                    break;
+                }
+            }
+          
+            i++;
+        }
+        if (assignedDoc==NULL)
+        {
+          return NULL;
+      }else{
+          printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
+          assignedDoc->numPatients++;
+          patient->assignedDoc=assignedDoc;
+          return assignedDoc;
+          //add to queue
+        }    
+
+        break;
+    case 3:
+        //find doctor normal or intern (normal)
+        i=0;
+        while (i<employeNum)
+        {
+            if ((doctors[i]->rank==low || doctors[i]->rank==med) && (doctors[i]->department==patient->department))
+            {
+                if (maxPatientsCheck(*doctors[i])==1)
+                {
+                    assignedDoc=doctors[i];
+                    break;
+                }
+            }
+          
+            i++;
+        }
+        if (assignedDoc==NULL)
+        {
+          return NULL;
+      }else{
+          printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
+          assignedDoc->numPatients++;
+          patient->assignedDoc=assignedDoc;
+          return assignedDoc;
+          //add to queue
+        }    
+
+        break;
+        case 4:
+        //find doctor normal or intern (normal)
+        i=0;
+        while (i<employeNum)
+        {
+            if ((doctors[i]->rank==low || doctors[i]->rank==med ||doctors[i]->rank==intern) && (doctors[i]->department==patient->department))
+            {
+                if (maxPatientsCheck(*doctors[i])==1)
+                {
+                    assignedDoc=doctors[i];
+                    break;
+                }
+            }
+          
+            i++;
+        }
+        if (assignedDoc==NULL)
+        {
+          return NULL;
+      }else{
+          printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
+          assignedDoc->numPatients++;
+          patient->assignedDoc=assignedDoc;
+          return assignedDoc;
+          //add to queue
+        }    
+
         break;
     default:
         //add to queue 
         break;
     }
-    return assignedDoc;
+   
 
-}*/
+}
 
 int maxPatientsCheck(doctor doctor) {
 
-    if (doctor.rank == 0) {
-        return (doctor.maxPatients < 4) ? 1 : 0; // visit only cases
-    }
-    if (doctor.rank == 1) {
-        return (doctor.maxPatients < 8) ? 1 : 0; // visit only and normal cases
-    }
-    if (doctor.rank == 2) {
-        return (doctor.maxPatients < 14) ? 1 : 0; // visit and normal and danger cases
-    }
-    if (doctor.rank == 3) {
-        return (doctor.maxPatients < 10) ? 1 : 0; // high and danger cases
-    }
-    if (doctor.rank == 4) {
-        return (doctor.maxPatients < 5) ? 1 : 0; // danger cases
-    }
+     return (doctor.numPatients < doctor.maxPatients) ? 1 : 0; // visit only cases
+   
 
     return 0; // Default return value
 }

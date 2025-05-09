@@ -26,7 +26,7 @@ extern int employeNum;  // Declare the global variable
 
 void addDoctor(char name[30], int age, char speciality[30], char address[150], rank rank, department department);
 void initId(char id[14], const char name[30], int age, rank rank, int employeNum);
-//doctor* assignDoc(patient *patient);
+doctor* assignDoc(patient *patient);
 int maxPatientsCheck(doctor doctor);
 doctor* findDocById(char id[14], rank searchRank);
 const char *rankToString(rank rank) ;

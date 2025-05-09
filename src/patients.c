@@ -32,11 +32,15 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     newPatient->age = age;
     newPatient->condition = condition;
     newPatient->department = department;
-   // newPatient->assignedDoc = assignDoc(newPatient);
+    if(assignDoc(newPatient)==NULL){
+        printf("no doctor available for this patient deporting to another hospital ...\n");
+        free(newPatient);
+        return;
+    }
     
     initId(newPatient->id, name, age, condition, patientNum);
     patients[patientNum] = newPatient;
-    addPatientToDepa(newPatient);//delay here
+    addPatientToDepa(newPatient);
     if (newPatient->department == 0) {
         rootEmePat = insertTreePat(rootEmePat,newPatient, newPatient->id, condition,firstInsertP,flipP);
         *firstInsertP=1;
@@ -109,8 +113,13 @@ void updatePatientCondition(patient *patient,condition condition,department depa
         rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
     } ;
-    printf("Patient condition updated to %s\n", conditionToString(condition));
 
+    printf("Patient condition updated to %s\n", conditionToString(condition));
+ if(assignDoc(patient)==NULL){
+        printf("no doctor available for this patient deporting to another hospital ...\n");
+        free(patient);
+        return;
+    }
 }
 void updatePatientDepartment(patient *patient,department department) {
     deletePat(patient->id,patient->condition,patient->department);
@@ -127,6 +136,12 @@ void updatePatientDepartment(patient *patient,department department) {
         *firstInsertP=1;
     } ;
     printf("Patient department updated to %s\n", departmentToString(department));
+   
+    if(assignDoc(patient)==NULL){
+        printf("no doctor available for this patient deporting to another hospital ...\n");
+        free(patient);
+        return;
+    }
     addPatientToDepa(patient);
    
 }
@@ -149,6 +164,11 @@ void updatePatient(patient *patient,char name[30],int age,char medicalCase[200],
         rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
     } ;
+    if(assignDoc(patient)==NULL){
+        printf("no doctor available for this patient deporting to another hospital ...\n");
+        free(patient);
+        return;
+    }
     printf("Patient name updated to %s\n", name);
     printf("Patient age updated to %d\n", age);
     printf("Patient medical case updated to %s\n", medicalCase);
