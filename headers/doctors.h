@@ -20,6 +20,7 @@ typedef struct doctor {
     int maxPatients;
     department department;
     char id[14];
+    struct Queue *doctorQueue; // Pointer to the queue
 } doctor;
 
 extern int employeNum;  // Declare the global variable

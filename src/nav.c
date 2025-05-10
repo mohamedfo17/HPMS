@@ -1,10 +1,15 @@
 #include "../headers/nav.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <stddef.h>  // For size_t
+#include <wchar.h>   // For wchar_t and related functions
+
 #include "../headers/patients.h"
 #include "../headers/doctors.h"
 #include "../headers/hospital.h"
+#include "../headers/queue.h"
+
 
 
  
@@ -807,6 +812,98 @@ void managePatients() {
     }
 
  }
+ void manageSessionsNav() {
+    int choice;
+    printf("\n--- Session Management ---\n");
+    printf("1 - Declare end of session\n");
+    printf("2 - See doctor schedules\n");
+    printf("0 - Go back\n");
+    printf("Choose an option: ");
+    scanf("%d", &choice);
+
+    if (choice == 0) {
+        homePage();
+        return;
+    }
+
+    if (choice == 1 || choice == 2) {
+        int subChoice;
+        printf("1 - Find doctor by ID and rank\n");
+        printf("2 - Find doctor by name\n");
+        printf("0 - Go back\n");
+        printf("Choose an option: ");
+        scanf("%d", &subChoice);
+
+        if (subChoice == 0) {
+            homePage();
+            return;
+        }
+
+        char id[15], name[30];
+        rank rankChoice;
+        doctor *doc = NULL;
+
+        int ch;
+        while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
+        if (subChoice == 1) {
+            printf("Enter rank (1-6): ");
+            if (scanf("%d", &rankChoice) != 1 || rankChoice < 1 || rankChoice > 6) {
+                printf("Invalid rank entered.\n");
+                return;
+            }
+
+            while ((ch = getchar()) != '\n' && ch != EOF); // flush
+
+            printf("Enter ID of doctor you want to find: ");
+            fgets(id, sizeof(id), stdin);
+            id[strcspn(id, "\n")] = '\0';
+
+            doc = findDocById(id, rankChoice);
+            if (doc == NULL) {
+                printf("No doctor found with ID %s and rank %d\n", id, rankChoice);
+                return;
+            }
+        } else if (subChoice == 2) {
+            printf("Enter doctor name: ");
+            fgets(name, sizeof(name), stdin);
+            name[strcspn(name, "\n")] = 0;
+
+            extern doctor *doctors[];
+            extern int employeNum;
+
+            for (int i = 0; i < employeNum; i++) {
+                if (strcmp(doctors[i]->name, name) == 0) {
+                    doc = doctors[i];
+                    break;
+                }
+            }
+
+            if (doc == NULL) {
+                printf("No doctor found with name: %s\n", name);
+                return;
+            }
+        }
+
+        if (choice == 1) {
+            // Declare end of session
+            printf("Ending session for doctor: %s\n", doc->name);
+            patient *p = dequeue(doc->doctorQueue);  // Only here we modify the queue
+            if (p != NULL) {
+                // Optional: process patient logic
+            }
+        } else {
+            // See doctor schedules
+            printf("Doctor schedule for %s:\n", doc->name);
+            printf("Total patients: %d\n", doc->numPatients);
+            displayDoctorSchedule(doc->doctorQueue);  // ✅ Safe, no dequeue
+        }
+    } else {
+        printf("Invalid choice.\n");
+        homePage();
+    }
+}
+
  void homePage() {
     while (1)
     {
@@ -815,7 +912,7 @@ void managePatients() {
     printf("2. Manage Doctors\n");
     printf("3. Discharge Patient\n");
     printf("4. View Waiting Queue\n");
-    printf("5. Add Patient to Queue\n");
+    printf("5. Manage Sessions\n");
     printf("6. Undo Last Discharge\n");
     printf("7. Search Patient in Directory Tree\n");
     printf("8. View Hospital Structure Tree\n");
@@ -837,11 +934,11 @@ void managePatients() {
         break;
     case 4:
         viewWaitingQueue();
-        break;
+        break;*/
     case 5:
-        addPatientToQueue();
+        manageSessionsNav();
         break;
-    case 6:
+   /* case 6:
         undoLastDischarge();
         break;
     case 7:
@@ -865,3 +962,6 @@ void managePatients() {
         break;
     }}
 }
+
+
+

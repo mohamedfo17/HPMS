@@ -1,6 +1,8 @@
 #include "../headers/doctors.h"
 #include "../headers/treeDoc.h"
 #include "../headers/departments.h"
+#include "../headers/queue.h"
+
 
 
 #include <stdlib.h>
@@ -86,6 +88,13 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     } ;
     employeNum++;
     printf("doctor Id is %s\n",newDoc->id);
+    Queue *doctorQueue = (Queue*)malloc(sizeof(Queue));
+    if (doctorQueue == NULL) {
+        printf("Failed to create queue\n");
+        return;
+    }
+    newDoc->doctorQueue = doctorQueue;
+    createQueue(doctorQueue);
 }
 
 doctor* assignDoc(patient *patient){
@@ -116,6 +125,7 @@ doctor* assignDoc(patient *patient){
             printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
             assignedDoc->numPatients++;
             patient->assignedDoc=assignedDoc;
+            enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
             return assignedDoc;
             //add to queue
           }    
@@ -144,6 +154,8 @@ doctor* assignDoc(patient *patient){
           printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
           assignedDoc->numPatients++;
           patient->assignedDoc=assignedDoc;
+          enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
+
           return assignedDoc;
           //add to queue
         }    
@@ -172,6 +184,8 @@ doctor* assignDoc(patient *patient){
           printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
           assignedDoc->numPatients++;
           patient->assignedDoc=assignedDoc;
+          enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
+
           return assignedDoc;
           //add to queue
         }    
@@ -200,6 +214,7 @@ doctor* assignDoc(patient *patient){
           printf("doctor %s is assigned to patient %s\n",assignedDoc->name,patient->name);
           assignedDoc->numPatients++;
           patient->assignedDoc=assignedDoc;
+          enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
           return assignedDoc;
           //add to queue
         }    
