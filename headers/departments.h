@@ -6,7 +6,7 @@ typedef struct doctor doctor;
 typedef struct patient patient;
 
 typedef enum {
-    lab=1, cardiology, physiology, emergency
+    lab=1, cardiology, physiology, neurology
 } department;
 
 typedef struct {
@@ -16,6 +16,7 @@ typedef struct {
     int numDoc;
     int numPat;  // Added counter for patients
     int surgeryRooms;
+    int patientRooms;
     float balence;
 } departmentInfo;
 extern departmentInfo departments[4];

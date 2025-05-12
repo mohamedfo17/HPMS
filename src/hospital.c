@@ -43,6 +43,9 @@ void showDepa(){
         printf("Number of doctors is %d\n",departments[i].numDoc);
         printf("Number of patients is %d\n",departments[i].numPat);
         printf("Surgery rooms is %d\n",departments[i].surgeryRooms);
+        printf("Patient rooms is %d\n",departments[i].patientRooms);
+
+
         printf("Balance is %.2f $\n",departments[i].balence);
         printf("--------------------------------------------------\n");
     
@@ -57,6 +60,9 @@ void showSurgeryRooms(){
     printf("the number of surgery rooms in the hospital is %d",departments[0].surgeryRooms+departments[1].surgeryRooms+departments[2].surgeryRooms+departments[3].surgeryRooms);
     printf("free surgery rooms are %d" );//complete it
     printf("busy surgery rooms are %d" );//complete it
+    printf("the number of patient (scan and visit rooms) rooms in the hospital is %d",departments[0].patientRooms+departments[1].patientRooms+departments[2].patientRooms+departments[3].patientRooms);
+    printf("free patient rooms are %d" );//complete it
+    printf("busy patient rooms are %d" );//complete it
 
 };
 void showPharmacy(){};

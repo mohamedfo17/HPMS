@@ -7,10 +7,10 @@
 
 // Statically initialize departments
 departmentInfo departments[4] = {
-    {lab, {NULL}, {NULL}, 0, 0,5,10000},
-    {cardiology, {NULL}, {NULL}, 0, 0,5,10000},
-    {physiology, {NULL}, {NULL}, 0, 0,5,10000},
-    {emergency, {NULL}, {NULL}, 0, 0,10,10000}
+    {lab, {NULL}, {NULL}, 0, 0,5,50,10000},
+    {cardiology, {NULL}, {NULL}, 0, 0,5,50,10000},
+    {physiology, {NULL}, {NULL}, 0, 0,5,50,10000},
+    {neurology, {NULL}, {NULL}, 0, 0,10,50,10000}
 };
 
 void addDocToDepa(doctor* doc) {
@@ -32,7 +32,7 @@ void addPatientToDepa(patient* patient) {
         case 1: return "Lab";
         case 2: return "Cardiology";
         case 3: return "Physiology";
-        case 4: return "Emergency";
+        case 4: return "neurology";
         default: return "Unknown";
     };
  }
