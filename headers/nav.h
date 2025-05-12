@@ -1,10 +1,13 @@
 #ifndef NAV_H     
 #define NAV_H
+#include "stack.h" // or wherever stack is defined
+
+void dischargePatient(stack **top);
 
 void homePage();
 void managePatients();
 void manageDoctors();
-void dischargePatient();
+void dischargePatient( struct stack **top);
 void viewWaitingQueue();
 void addPatientToQueue();
 void undoLastDischarge();

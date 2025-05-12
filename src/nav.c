@@ -10,9 +10,14 @@
 #include "../headers/hospital.h"
 #include "../headers/queue.h"
 
+#include "../headers/stack.h"
 
 
- 
+
+  
+    
+
+
 
 void addPatientNav() {
     char name[30];
@@ -719,20 +724,69 @@ void editDoctorNav() {
     //add to queue
     addToQueue(patient);
 };*/
-/*void dischargePatient(){
-    printf("enter id of patient you want to discharge");
-    char id[14];
-    fgets(id,sizeof(id),stdin);
-    //find patient
-    Patient patient = findPatientById(id);
-    if (patient.id == NULL) {
-        printf("No patient found with ID: %s\n", id);
+void dischargePatient(stack **top){
+    int subChoice;
+    printf("1 - Find patient by ID and rank\n");
+    printf("2 - Find patient by name\n");
+    printf("0 - Go back\n");
+    printf("Choose an option: ");
+    scanf("%d", &subChoice);
+
+    if (subChoice == 0) {
+        homePage();
         return;
     }
+
+    char id[15], name[30];
+    condition condChoice;
+    patient *pat = NULL;
+
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+
+    if (subChoice == 1) {
+        printf("Enter condition (1-4): ");
+        if (scanf("%d", &condChoice) != 1 || condChoice < 1 || condChoice > 6) {
+            printf("Invalid condition entered.\n");
+            return;
+        }
+
+        while ((ch = getchar()) != '\n' && ch != EOF); // flush
+
+        printf("Enter ID of patient you want to find: ");
+        fgets(id, sizeof(id), stdin);
+        id[strcspn(id, "\n")] = '\0';
+
+         pat= findPatientById(id, condChoice);
+        if (pat == NULL) {
+            printf("No patient found with ID %s and condition %d\n", id, condChoice);
+            return;
+        }
+    } else if (subChoice == 2) {
+        printf("Enter patient name: ");
+        fgets(name, sizeof(name), stdin);
+        name[strcspn(name, "\n")] = 0;
+
+        extern patient *patients[];
+        extern int patientNum;
+
+        for (int i = 0; i < patientNum; i++) {
+            if (strcmp(patients[i]->name, name) == 0) {
+                pat = patients[i];
+                break;
+            }
+        }
+
+        if (pat == NULL) {
+            printf("No patient found with name: %s\n", name);
+            return;
+        }
+    }
+    
+    push(top, pat); // pass pointer to pointer
     //discharge patient
-    discharge(patient);
 };
-void undoLastDischarge(){
+/*void undoLastDischarge(){
 
 };*/
 void manageDoctors() {
@@ -951,6 +1005,11 @@ void managePatients() {
 }
 
  void homePage() {
+
+    stack *top = NULL;
+
+    createStack(&top); // if you have a meaningful createQueue
+
     while (1)
     {
     printf("Choose an option:\n");
@@ -975,10 +1034,10 @@ void managePatients() {
     case 2:
         manageDoctors();
         break;
-   /* case 3:
-        dischargePatient();
+    case 3:
+        dischargePatient(&top);
         break;
-    case 4:
+   /* case 4:
         viewWaitingQueue();
         break;*/
     case 5:

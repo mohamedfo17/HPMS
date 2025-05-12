@@ -18,6 +18,8 @@ struct patient* dequeue(Queue* doctorQueue);
 int isEmpty(Queue* doctorQueue);
 void freeQueue(Queue *q);
 void displayDoctorSchedule(Queue *q);
+void deletefromqueue(Queue *q, char id[15]);
+
 
 
 

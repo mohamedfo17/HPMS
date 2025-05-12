@@ -72,3 +72,33 @@ void displayDoctorSchedule(Queue *q) {
         current = current->next;
     }
 }
+void deletefromqueue(Queue *q, char id[15]) {
+    if (q->front == NULL) {
+        printf("Queue is empty. \n");
+        return;
+    }
+    node *current = q->front;
+    node *previous = NULL;
+    while (current != NULL) {
+        if (strcmp(current->patient->id, id) == 0) {
+            if (previous == NULL) {
+                q->front = current->next;
+            } else {
+                previous->next = current->next;
+            }
+            if (current == q->rear) {
+                q->rear = previous;
+            }
+            free(current->patient); 
+            free(current);
+            printf("Patient with ID %s successfully removed from the queue.\n", id);
+            return;
+        }
+        previous = current;
+        current = current->next;  
+        
+    }
+    printf("Error, patient with ID %s not found in the queue.\n", id);
+    return;
+    
+}
