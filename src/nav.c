@@ -13,7 +13,7 @@
 
 
 
-
+extern doctor *doctors[200];
   
     
 
@@ -429,7 +429,7 @@ void addDoctorNav() {
     // Call your addDoctor function here (you should have one implemented)
    
 }
-//edit doctors nav is requiered;
+
 void deleteDoctorNav() {
     char id[15];
     rank deleteRank;
@@ -1004,6 +1004,18 @@ void managePatients() {
         homePage();
     }
 }
+void viewWaitingQueue(){
+    doctor *doc =NULL;
+    int i=0;
+    while (i<employeNum)
+    {
+        doc=doctors[i];
+        printf("the doctor %s has %d patients and his queue is : \n",doc->name,doc->numPatients);
+        displayDoctorSchedule(doc->doctorQueue);
+        i++;
+    }
+    
+};
 
  void homePage() {
 
@@ -1038,9 +1050,9 @@ void managePatients() {
     case 3:
         dischargePatient(&top);
         break;
-   /* case 4:
+   case 4:
         viewWaitingQueue();
-        break;*/
+        break;
     case 5:
         manageSessionsNav(&top);
         break;
