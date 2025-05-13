@@ -72,7 +72,8 @@ void displayDoctorSchedule(Queue *q) {
         current = current->next;
     }
 }
-void deletefromqueue(Queue *q, char id[15]) {
+void deletefromqueue(Queue *q, const char *id)
+ {
     if (q->front == NULL) {
         printf("Queue is empty. \n");
         return;

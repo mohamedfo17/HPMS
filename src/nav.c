@@ -9,8 +9,8 @@
 #include "../headers/doctors.h"
 #include "../headers/hospital.h"
 #include "../headers/queue.h"
-
 #include "../headers/stack.h"
+
 
 
 
@@ -431,25 +431,35 @@ void addDoctorNav() {
 }
 //edit doctors nav is requiered;
 void deleteDoctorNav() {
-    printf("Enter the ID of the doctor you want to delete,\nfollowed by their rank:\n and department \n");
-
     char id[15];
-    int ch;
-while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+    rank deleteRank;
+    department deleteDepartment;
 
+    // Clear stdin before starting input
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+
+    // Prompt and read ID
+    printf("Enter the ID of the doctor to delete: ");
     fgets(id, sizeof(id), stdin);
-    
+
     // Remove newline if present
     size_t len = strlen(id);
     if (len > 0 && id[len - 1] == '\n') {
-        id[len - 1] = '\0';}
+        id[len - 1] = '\0';
+    }
 
-    rank deleteRank;
+    // Prompt and read rank and department
+    printf("Enter the doctor's rank (as an integer): ");
     scanf("%d", &deleteRank);
-    department deleteDepartment;
+
+    printf("Enter the doctor's department (as an integer): ");
     scanf("%d", &deleteDepartment);
-    deleteDoc(id,deleteDepartment, deleteRank);
+
+    // Call deletion function
+    deleteDoc(id, deleteDepartment, deleteRank);
 }
+
 void viewDoctorNav() {
     printf("Enter the ID of the doctor you want to view\n");
 
@@ -710,23 +720,9 @@ void editDoctorNav() {
     
 }
 
-
-/*void addPatientToQueue(){
-    printf("enter id of patient you want to add to queue");
-    char id[14];
-    fgets(id,sizeof(id),stdin);
-    //find patient
-    Patient patient = findPatientById(id);
-    if (patient.id == NULL) {
-        printf("No patient found with ID: %s\n", id);
-        return;
-    }
-    //add to queue
-    addToQueue(patient);
-};*/
 void dischargePatient(stack **top){
     int subChoice;
-    printf("1 - Find patient by ID and rank\n");
+    printf("1 - Find patient by ID and condition\n");
     printf("2 - Find patient by name\n");
     printf("0 - Go back\n");
     printf("Choose an option: ");
@@ -786,9 +782,14 @@ void dischargePatient(stack **top){
     push(top, pat); // pass pointer to pointer
     //discharge patient
 };
-/*void undoLastDischarge(){
-
-};*/
+void undoLastDischarge(stack **top){
+    if (top==NULL)
+    {
+        printf("there is no patient to undo \n");
+        homePage();
+    }
+    pop(top);
+};
 void manageDoctors() {
     printf("\n--- Doctor Management ---\n");
     printf("1. Add Doctor\n");
@@ -866,7 +867,7 @@ void managePatients() {
     }
 
  }
- void manageSessionsNav() {
+ void manageSessionsNav(stack **top) {
     int choice;
     printf("\n--- Session Management ---\n");
     printf("1 - Declare end of session\n");
@@ -951,7 +952,7 @@ void managePatients() {
                 switch (decision)
                 {
                 case 1:
-                  //  dischargePatient(patient);
+                push(top, p);
                     break;
                 case 2:
                 condition patientCondition;
@@ -1041,12 +1042,12 @@ void managePatients() {
         viewWaitingQueue();
         break;*/
     case 5:
-        manageSessionsNav();
+        manageSessionsNav(&top);
         break;
-   /* case 6:
-        undoLastDischarge();
+    case 6:
+        undoLastDischarge(&top);
         break;
-    case 7:
+    /*case 7:
         searchPatientInTree();
         break;*/
     case 8:

@@ -18,15 +18,12 @@ struct patient* dequeue(Queue* doctorQueue);
 int isEmpty(Queue* doctorQueue);
 void freeQueue(Queue *q);
 void displayDoctorSchedule(Queue *q);
-void deletefromqueue(Queue *q, char id[15]);
-<<<<<<< HEAD
+void deletefromqueue(Queue *q, const char *id);
 
 
 
 
 
-=======
->>>>>>> 552d9662adc624224a51e1413a3d16cbdc218b48
 
 
 

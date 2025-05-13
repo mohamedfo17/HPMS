@@ -215,7 +215,13 @@ patient* findPatientById(char id[14],condition searchCondition) {
 
 }
 void deletePat(char id[14],condition searchCondition,department searchDepartment) {
-    TreeNodePat* foundNode = NULL;
+    patient *patient = NULL;
+    for (int i = 0; i < patientNum; i++) {
+        if (strcmp(patients[i]->id, id) == 0) {
+            patient = patients[i];
+            break;
+        }
+    }
     if (searchDepartment == 0) {
         rootEmePat = deleteNodePat(rootEmePat, id, searchCondition, firstSearchP);
     } else if (searchDepartment == 1) {
@@ -223,4 +229,6 @@ void deletePat(char id[14],condition searchCondition,department searchDepartment
     } else if (searchDepartment == 2) {
         rootPhyPat = deleteNodePat(rootPhyPat, id, searchCondition, firstSearchP);
     }
+    patientNum--;
+    deletePatientFromDepa(patient);
 }

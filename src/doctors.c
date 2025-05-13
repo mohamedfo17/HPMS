@@ -250,7 +250,13 @@ doctor* findDocById(char id[14],rank searchRank) {
 
 }
 void deleteDoc(char id[14], department searchDepartment, rank searchRank) {
-    TreeNode* foundNode = NULL;
+    doctor *doc = NULL;
+    for (int i = 0; i < employeNum; i++) {
+        if (strcmp(doctors[i]->id, id) == 0) {
+            doc = doctors[i];
+            break;
+        }
+    }
     if (searchDepartment == 0) {
         rootEmeDoc = deleteNode(rootEmeDoc, id, searchRank, firstSearch);
     } else if (searchDepartment == 1) {
@@ -258,6 +264,9 @@ void deleteDoc(char id[14], department searchDepartment, rank searchRank) {
     } else if (searchDepartment == 2) {
         rootPhyDoc = deleteNode(rootPhyDoc, id, searchRank, firstSearch);
     }
+    employeNum--;
+    deleteDocFromDepa(doc);
+    printf("doctor deleted\n");
 }
 const char *rankToString(rank rank) {
     switch (rank) {

@@ -23,4 +23,6 @@ extern departmentInfo departments[4];
 void addDocToDepa(doctor* doc);
 void addPatientToDepa(patient* patient);
 const char* departmentToString(department department);
+void deleteDocFromDepa(doctor* doc);
+void deletePatientFromDepa(patient* pat);
 #endif

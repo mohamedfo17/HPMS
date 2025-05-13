@@ -8,6 +8,9 @@
         "patients.h": "c",
         "departments.h": "c",
         "treedoc.h": "c",
-        "treepat.h": "c"
+        "treepat.h": "c",
+        "wchar.h": "c",
+        "queue.h": "c",
+        "stack.h": "c"
     }
 }

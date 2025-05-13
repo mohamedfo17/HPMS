@@ -2,6 +2,7 @@
 #include "../headers/stack.h"
 #include "../headers/patients.h"
 #include "../headers/treePat.h"
+#include "../headers/queue.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,14 +23,20 @@ void push(stack **top, patient *patient) {
         printf("Memory allocation failed\n");
         return;
     }
+   
+    
     newNode->patient = patient;
     newNode->next = *top;
     *top = newNode;
-
-   // deleteFromQueue(patient->id);
+    char name[30];
+    strcpy(name, patient->name);
+    deletefromqueue(patient->assignedDoc->doctorQueue,patient->id);
     deletePat(patient->id, patient->condition, patient->department);
-
-    printf("Patient %s is discharged\n", patient->name);
+    if (*top == NULL) {
+        printf("No patient has been discharged.\n");
+        return;
+    }
+    printf("Patient %s is discharged\n", name);
 }
 
 
@@ -43,7 +50,7 @@ void pop(stack **top){
     patient *backPat=temp->patient;
     *top=(*top)->next;
     addPatient(backPat->name,backPat->age,backPat->medicalCase,backPat->address,backPat->condition,backPat->department);
-
+    addPatientToDepa(backPat);
     free(temp);
 
 
