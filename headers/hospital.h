@@ -6,5 +6,4 @@ void showHospitalStructureNav();
 void showDepa();
 void showBalence();
 void showSurgeryRooms();
-void showPharmacy();
 #endif

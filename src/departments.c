@@ -7,10 +7,10 @@
 
 // Statically initialize departments
 departmentInfo departments[4] = {
-    {lab, {NULL}, {NULL}, 0, 0,5,50,10000},
-    {cardiology, {NULL}, {NULL}, 0, 0,5,50,10000},
-    {physiology, {NULL}, {NULL}, 0, 0,5,50,10000},
-    {neurology, {NULL}, {NULL}, 0, 0,10,50,10000}
+    {lab, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000},
+    {cardiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000},
+    {physiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000},
+    {neurology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000}
 };
 
 void addDocToDepa(doctor* doc) {
@@ -19,14 +19,57 @@ void addDocToDepa(doctor* doc) {
     departments[depIndex].doctors[departments[depIndex].numDoc] = doc;
     departments[depIndex].numDoc++;
     
+
+    
 }
 
-void addPatientToDepa(patient* patient) {
-    // Add patient to department
+int addPatientToDepa(patient* patient) {
+
     int depIndex = patient->department - 1;
-    departments[depIndex].patients[departments[depIndex].numPat] = patient;
-    departments[depIndex].numPat++;
+    if (patient->condition <= 0 || patient->condition > 4) {
+        printf("Error: Invalid patient condition %d\n", patient->condition);
+        return 0;
+    }
+    
+    if (patient->condition >= 1 && patient->condition <= 2) {
+        if (departments[depIndex].surgeryRoomsDepa.busy + 1 <= departments[depIndex].surgeryRoomsDepa.total) {
+            printf("Adding patient to surgery room n%d in department of %s\n", 
+                   departments[depIndex].surgeryRoomsDepa.busy + 1, 
+                   departmentToString(departments[depIndex].department));
+            departments[depIndex].surgeryRoomsDepa.busy++;
+            departments[depIndex].surgeryRoomsDepa.empty--;
+            
+            departments[depIndex].patients[departments[depIndex].numPat] = patient;
+            departments[depIndex].numPat++;
+            
+            return 1;
+        } else {
+            printf("There is no free surgery room in the department of %s\nDeporting to new hospital\n", 
+                   departmentToString(departments[depIndex].department));
+            return 0;
+        }
+    } else if (patient->condition >= 3 && patient->condition <= 4) {
+        if (departments[depIndex].patientRoomsDepa.busy + 1 <= departments[depIndex].patientRoomsDepa.total) {
+             printf("Adding patient to patient room n%d in department of %s\n", 
+                   departments[depIndex].patientRoomsDepa.busy + 1, 
+                   departmentToString(departments[depIndex].department));
+            departments[depIndex].patientRoomsDepa.busy++;
+            departments[depIndex].patientRoomsDepa.empty--;
+            
+            departments[depIndex].patients[departments[depIndex].numPat] = patient;
+            departments[depIndex].numPat++;
+            
+            return 1;
+        } else {
+            printf("There is no free patient room in the department of %s\nDeporting to new hospital\n", 
+                   departmentToString(departments[depIndex].department));
+            return 0;
+        }
+    }
+    
+    return 0;
 }
+
 void deleteDocFromDepa(doctor* doc) {
     if (doc == NULL) {
         return;

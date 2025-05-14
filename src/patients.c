@@ -32,15 +32,17 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     newPatient->age = age;
     newPatient->condition = condition;
     newPatient->department = department;
-    if(assignDoc(newPatient)==NULL){
+    
+    
+    initId(newPatient->id, name, age, condition, patientNum);
+    int check =addPatientToDepa(newPatient);
+    if(check){
+        if(assignDoc(newPatient)==NULL){
         printf("no doctor available for this patient deporting to another hospital ...\n");
         free(newPatient);
         return;
     }
-    
-    initId(newPatient->id, name, age, condition, patientNum);
     patients[patientNum] = newPatient;
-    addPatientToDepa(newPatient);
     if (newPatient->department == 0) {
         rootEmePat = insertTreePat(rootEmePat,newPatient, newPatient->id, condition,firstInsertP,flipP);
         *firstInsertP=1;
@@ -54,7 +56,10 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     patientNum++;
         printf("Patient added successfully!\n");
         printf("Patient Id is %s\n",newPatient->id);
-
+    }else{
+        printf("failed to add patient\n");
+        free(newPatient);
+    }
 
 }
 

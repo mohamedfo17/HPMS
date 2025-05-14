@@ -42,7 +42,7 @@ void push(stack **top, patient *pat) {
     deletefromqueue(pat->assignedDoc->doctorQueue, pat->id);
     deletePat(pat->id, pat->condition, pat->department);
 
-    printf("Patient %s is discharged\n", pat->name);
+    printf("Patient %s is discharged\n", newNode->patient->name);
 }
 
 void pop(stack **top) {
