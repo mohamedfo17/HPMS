@@ -43,15 +43,20 @@ void showDepa(){
 
 
         printf("Balance is %.2f $\n",departments[i].balence);
+         printf("income is %.2f $\n",departments[i].income);
+
         printf("--------------------------------------------------\n");
     
     }
     
 };
 
-/*void showBalence(){
-    printf("The hospital balence is %d\n",departments[0].balence+departments[1].balence+departments[2].balence+departments[3].balence+pharmaBudget);
-};*/
+void showBalence(){
+    printf("The hospital balence is %d\n",departments[0].balence+departments[1].balence+departments[2].balence+departments[3].balence);
+    printf("The hospital income is %d\n",departments[0].income+departments[1].income+departments[2].income+departments[3].income);
+
+    int choice;
+};
 void showSurgeryRooms(){
     printf("the number of surgery rooms in the hospital is %d\n",departments[0].surgeryRoomsDepa.total+departments[1].surgeryRoomsDepa.total+departments[2].surgeryRoomsDepa.total+departments[3].surgeryRoomsDepa.total);
     printf("free surgery rooms are %d\n",departments[0].surgeryRoomsDepa.empty + departments[1].surgeryRoomsDepa.empty + departments[2].surgeryRoomsDepa.empty + departments[3].surgeryRoomsDepa.empty );//complete it

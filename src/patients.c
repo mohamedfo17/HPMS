@@ -18,7 +18,7 @@ patient* patients[200];  // Array of pointers to patient structs
 TreeNodePat *rootEmePat=NULL;
 TreeNodePat *rootCarPat=NULL;
 TreeNodePat *rootPhyPat=NULL;
-void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department) {
+void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department,bool isAssured) {
     patient *newPatient = (patient*)malloc(sizeof(patient));
     if (newPatient==NULL)
     {
@@ -32,8 +32,8 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     newPatient->age = age;
     newPatient->condition = condition;
     newPatient->department = department;
-    
-    
+    newPatient->isAssured=isAssured;
+    newPatient->sessionCost=sessionCost(newPatient);
     initId(newPatient->id, name, age, condition, patientNum);
     int check =addPatientToDepa(newPatient);
     if(check){
@@ -56,6 +56,7 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     patientNum++;
         printf("Patient added successfully!\n");
         printf("Patient Id is %s\n",newPatient->id);
+        
     }else{
         printf("failed to add patient\n");
         free(newPatient);
@@ -236,4 +237,18 @@ void deletePat(char id[14],condition searchCondition,department searchDepartment
     }
     patientNum--;
     deletePatientFromDepa(patient);
+}
+
+int sessionCost(patient *patient){
+    if (patient->condition==1||patient->condition==2)
+    {
+        return patient->isAssured ? 100 : 400;
+      }else if (patient->condition==3||patient->condition==4)
+      {
+         return patient->isAssured ? 20 : 100;
+
+      }
+        
+    
+    
 }

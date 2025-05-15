@@ -35,7 +35,7 @@ void push(stack **top, patient *pat) {
     newNode->patient->condition = pat->condition;
     newNode->patient->department = pat->department;
     newNode->patient->assignedDoc = pat->assignedDoc;
-
+    newNode->patient->isAssured = pat->isAssured;
     newNode->next = *top;
     *top = newNode;
 
@@ -56,7 +56,7 @@ void pop(stack **top) {
     *top = (*top)->next;
 
 
-    addPatient(backPat->name, backPat->age, backPat->medicalCase, backPat->address, backPat->condition, backPat->department);
+    addPatient(backPat->name, backPat->age, backPat->medicalCase, backPat->address, backPat->condition, backPat->department,backPat->isAssured);
 
     free(backPat);
     free(temp);

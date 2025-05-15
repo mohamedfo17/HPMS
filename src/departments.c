@@ -7,10 +7,10 @@
 
 // Statically initialize departments
 departmentInfo departments[4] = {
-    {lab, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000},
-    {cardiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000},
-    {physiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000},
-    {neurology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000}
+    {lab, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0},
+    {cardiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0},
+    {physiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0},
+    {neurology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0}
 };
 
 void addDocToDepa(doctor* doc) {

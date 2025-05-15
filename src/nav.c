@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stddef.h>  // For size_t
 #include <wchar.h>   // For wchar_t and related functions
-
+#include <stdbool.h>
 #include "../headers/patients.h"
 #include "../headers/doctors.h"
 #include "../headers/hospital.h"
@@ -14,6 +14,7 @@
 
 
 extern doctor *doctors[200];
+
   
     
 
@@ -27,7 +28,7 @@ void addPatientNav() {
     condition patientCondition;
     department patientDepartment;
     int conditionChoice, departmentChoice;
-    
+    bool isAssured;
     printf("\n--- Add Patient ---\n");
     while (getchar() != '\n');
     
@@ -102,9 +103,12 @@ void addPatientNav() {
             patientDepartment = neurology; // Default
             printf("Invalid choice, setting to neurology.\n");
     }
-    
+    printf("7-does the client have assurance plan ?:\n");
+    printf("   1. Yes\n");
+    printf("   2. No\n");
+    scanf("%d",&isAssured);
     // Now call the addPatient function with the collected data
-    addPatient(name, age, medicalCase, address, patientCondition, patientDepartment);
+    addPatient(name, age, medicalCase, address, patientCondition, patientDepartment,isAssured);
     
 }
 void editPatientNav() {
@@ -944,6 +948,7 @@ void managePatients() {
             // Declare end of session
             printf("Ending session for doctor: %s\n", doc->name);
             patient *p = dequeue(doc->doctorQueue);  // Only here we modify the queue
+            
             if (p != NULL) {
                
                 printf("what is the next decision for the patient %s :\n 1\\ discharge \n 2\\ edit the patient condition \n 3\\ have another appointment \n 4\\ send to another hospital \n",p->name);

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+extern departmentInfo departments[4];
 
 void createQueue(Queue* doctorQueue) {
     doctorQueue->front = NULL;
@@ -37,6 +38,8 @@ patient* dequeue(Queue *q) {
     if (q->front == NULL) q->rear = NULL;
 
     free(temp);
+    departments[p->department-1].income+=p->sessionCost;
+    departments[p->department-1].balence+=p->sessionCost;
     return p;
 }
 
