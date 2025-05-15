@@ -18,9 +18,9 @@ void showHospitalStructureNav(){
         case 1:
             showDepa();
             break;
-    /*    case 2:
+     case 2:
             showBalence();
-            break;*/
+            break;
         case 3:
             showSurgeryRooms();
             break;
