@@ -285,7 +285,7 @@ const char *rankToString(rank rank) {
 }
 
 void viewAllDoctors(){
-    printf("1-view only names\n-2view names and ids");
+    printf("1-view only names\n-2view all info \n");
     int choice;
     scanf("%d", &choice);
     if (choice==1)
@@ -298,7 +298,16 @@ void viewAllDoctors(){
     else if(choice==2){
         for (int i = 0; i < employeNum; i++)
         {
-            printf("-The doctor number %d is %s\n his id is %s\n",i+1,doctors[i]->name,doctors[i]->id);
+printf("-The doctor number %d is %s\n", i + 1, doctors[i]->name);
+printf("   id : %s\n", doctors[i]->id);
+printf("   age : %d\n", doctors[i]->age);
+printf("   address : %s\n", doctors[i]->address);
+printf("   speciality : %s\n", doctors[i]->speciality);
+printf("   rank : %s\n", rankToString(doctors[i]->rank)); // assuming you have rankToString
+printf("   assigned to : %s department\n", departmentToString(doctors[i]->department));
+printf("   has %d patients\n", doctors[i]->numPatients);
+printf("   max patients capacity : %d\n", doctors[i]->maxPatients);
+printf("   wage : %d\n", doctors[i]->wage);
         }}
     ;
     //manage patients

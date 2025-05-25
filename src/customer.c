@@ -1,4 +1,4 @@
-#include "customer.h"
+#include "../headers/customer.h"
 
 
 //add drug to cart
@@ -167,7 +167,7 @@ void delete_cart(medicine *ptr, int no_sellers, char **sellers, int id, int quan
   return;
 }
 
-void buy(medicine *ptr,char fname_customer[]){
+void buy(medicine *ptr,char fname_customer[],int cart_counter){
 
   int i=0,order;
 

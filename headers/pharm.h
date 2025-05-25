@@ -1,3 +1,6 @@
+#ifndef PHARM_H
+#define PHARM_H
+
 #include "medic.h"
 #include <stdlib.h>
 #include <string.h>
@@ -19,3 +22,5 @@ int login_pharmacist(char fname[]);
 void print_stock(char fname[]);
 
 int rand_id(void);
+
+#endif // PHARM_H

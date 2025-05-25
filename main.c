@@ -1,8 +1,8 @@
-#include "./headers/nav.h"
+#include "./headers/authentication.h"
 
 int main(){
     
-    homePage();
+   authenticateUser();
 
     return 0;
 }

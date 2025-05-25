@@ -1,15 +1,15 @@
-#include "medic.h"
+#include "../headers/medic.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "pharm.h"
-#include "customer.h"
+#include "../headers/pharm.h"
+#include "../headers/customer.h"
 
 
 
 
-int main() {
+int pharmaMain() {
 
   char c;
 
@@ -24,10 +24,8 @@ int main() {
 
   printf("\n\nAre you a doctor or a customer?(d/c) ");
 
-  c = getchar();
-
-  getchar();
-
+scanf(" %c", &c); // The space skips any whitespace/newlines
+//printf("here");
   switch (c) {
 
   case 'd':
@@ -276,7 +274,7 @@ int main() {
 
         case 4:
 
-          buy(cart, login);
+          buy(cart,  login,cart_count);
 
           break;
 

@@ -37,6 +37,7 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
     if(check){
         if(assignDoc(newPatient)==NULL){
         printf("no doctor available for this patient deporting to another hospital ...\n");
+        departments[newPatient->department-1].numPat--;
         free(newPatient);
         return;
     }
@@ -63,7 +64,7 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
 }
 
 void viewAllPatients(){
-    printf("1-view only names\n-2view names and ids");
+    printf("1-view only names\n-2view all info");
     int choice;
     scanf("%d", &choice);
     if (choice==1)
@@ -74,8 +75,18 @@ void viewAllPatients(){
         printf("-The patient number %d is %s\n",i+1,patients[i]->name);
     }} else if(choice==2){
         for (int i = 0; i < patientNum; i++)
-    {
-            printf("-The patient number %d is %s\n his id is %s\n",i+1,patients[i]->name,patients[i]->id);
+    {       printf("-The patient number %d is %s\n",patients[i]->name);
+            printf("   Id : %s\n",patients[i]->id);
+            printf("   Age : %d\n",i+1,patients[i]->age);
+            printf("   Address : %s\n",patients[i]->address);
+            printf("   Doctor : %s\n",patients[i]->assignedDoc);
+            printf("   Condition : %s\n",conditionToString((patients[i]->age)));
+            printf("   Session cost : %d\n",patients[i]->sessionCost);
+            printf("   Department : %s\n",departmentToString((patients[i]->department)));
+
+
+           
+            
         }}
     //manage patients
     
@@ -121,6 +132,8 @@ void updatePatientCondition(patient *patient,condition condition,department depa
     printf("Patient condition updated to %s\n", conditionToString(condition));
  if(assignDoc(patient)==NULL){
         printf("no doctor available for this patient deporting to another hospital ...\n");
+                departments[patient->department-1].numPat--;
+
         free(patient);
         return;
     }
@@ -143,6 +156,8 @@ void updatePatientDepartment(patient *patient,department department) {
    
     if(assignDoc(patient)==NULL){
         printf("no doctor available for this patient deporting to another hospital ...\n");
+                departments[patient->department-1].numPat--;
+
         free(patient);
         return;
     }
@@ -170,6 +185,8 @@ void updatePatient(patient *patient,char name[30],int age,char medicalCase[200],
     } ;
     if(assignDoc(patient)==NULL){
         printf("no doctor available for this patient deporting to another hospital ...\n");
+                departments[patient->department-1].numPat--;
+
         free(patient);
         return;
     }

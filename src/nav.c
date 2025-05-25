@@ -10,6 +10,7 @@
 #include "../headers/hospital.h"
 #include "../headers/queue.h"
 #include "../headers/stack.h"
+#include "../headers/saveLoad.h"
 
 
 
@@ -77,7 +78,7 @@ void addPatientNav() {
     
     while (getchar() != '\n'); // Clear input buffer
     
-    printf("6-Select patient department:\n");
+    printf("6-Select doctor department:\n");
     printf("   1. Lab\n");
     printf("   2. Cardiology\n");
     printf("   3. Physiology\n");
@@ -375,6 +376,12 @@ void addDoctorNav() {
     printf("2-Enter the doctor age: ");
     scanf("%d", &age);
     while (getchar() != '\n'); // Clear input buffer after scanf
+    if (age<18||age>101)
+    {
+        printf("error\n");
+        homePage();
+    }
+    
 
     printf("3-Enter the doctor specialty: ");
     fgets(specialty, sizeof(specialty), stdin);
@@ -1037,11 +1044,10 @@ void viewWaitingQueue(){
     printf("4. View Waiting Queue\n");
     printf("5. Manage Sessions\n");
     printf("6. Undo Last Discharge\n");
-    printf("7. Search Patient in Directory Tree\n");
-    printf("8. View Hospital Structure Tree\n");
-    printf("9. Save Data to File\n");
-    printf("10. Load Data from File\n");
-    printf("11. Exit\n");
+    printf("7. View Hospital Structure Tree\n");
+    printf("8.Save Data to File\n");
+    printf("9. Load Data from File\n");
+    printf("10. Exit\n");
     int n;
     scanf("%d",&n);
     switch (n)
@@ -1064,19 +1070,17 @@ void viewWaitingQueue(){
     case 6:
         undoLastDischarge(&top);
         break;
-    /*case 7:
-        searchPatientInTree();
-        break;*/
-    case 8:
+   
+    case 7:
     showHospitalStructureNav();
         break;
-   /* case 9:
-        saveDataToFile();
+    case 8:
+        saveAllData();
+        break;
+    case 9:
+        loadAllData();
         break;
     case 10:
-        loadDataFromFile();
-        break;*/
-    case 11:
         exit(0);
         break;
     default:

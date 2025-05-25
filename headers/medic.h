@@ -1,5 +1,6 @@
+#ifndef MEDIC_H
+#define MEDIC_H
 
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,3 +29,5 @@ typedef struct{
 date sys_date(void);
 
 int rand_order(void);
+
+#endif // MEDIC_H

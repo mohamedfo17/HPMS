@@ -11,6 +11,9 @@
         "treepat.h": "c",
         "wchar.h": "c",
         "queue.h": "c",
-        "stack.h": "c"
+        "stack.h": "c",
+        "saveload.h": "c",
+        "customer.h": "c",
+        "pharm.h": "c"
     }
 }

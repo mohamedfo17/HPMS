@@ -1,4 +1,5 @@
-#include"medic.h"
+#include "../headers/medic.h"
+#include <time.h>
 
 date sys_date(void){
     date sys_date;
