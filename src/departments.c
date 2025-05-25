@@ -7,10 +7,10 @@
 
 // Statically initialize departments
 departmentInfo departments[4] = {
-    {lab, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0},
-    {cardiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0},
-    {physiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0},
-    {neurology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0}
+    {lab, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0,0},
+    {cardiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0,0},
+    {physiology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0,0},
+    {neurology, {NULL}, {NULL}, 0, 0,{7,0,7},{40,0,40},10000,0,0}
 };
 
 void addDocToDepa(doctor* doc) {
@@ -123,10 +123,21 @@ void deletePatientFromDepa(patient* pat) {
     
     // If found, shift the array left to remove the patient
     if (found != -1) {
+        if (departments[depIndex].patients[found]->condition == 1 || 
+            departments[depIndex].patients[found]->condition == 2) {
+            departments[depIndex].surgeryRoomsDepa.busy--;
+            departments[depIndex].surgeryRoomsDepa.empty++;
+        } else if (departments[depIndex].patients[found]->condition == 3 || 
+                   departments[depIndex].patients[found]->condition == 4) {
+            departments[depIndex].patientRoomsDepa.busy--;
+            departments[depIndex].patientRoomsDepa.empty++;
+        }         
         for (int i = found; i < departments[depIndex].numPat - 1; i++) {
             departments[depIndex].patients[i] = departments[depIndex].patients[i + 1];
         }
         departments[depIndex].numPat--;
+        
+        
     }
 }
 

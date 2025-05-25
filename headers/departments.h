@@ -24,6 +24,7 @@ typedef struct {
     patientRooms patientRoomsDepa;
     float balence;
     float income;
+    float expenses;
 } departmentInfo;
 extern departmentInfo departments[4];
 void addDocToDepa(doctor* doc);

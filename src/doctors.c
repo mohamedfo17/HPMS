@@ -17,6 +17,7 @@ int f=0;
 int *flip=&f;
 int g=0;//maybe you will need to declare them in doc and pat header files
 int *firstSearch=&g;
+extern departmentInfo departments[4];
 
 int employeNum = 0; 
 doctor* doctors[200];  // Array of pointers to doctor structs
@@ -73,6 +74,7 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
         case president: newDoc->maxPatients = 3; break; // President handles special cases
         default:;//;
     }
+    newDoc->wage=wage(newDoc);
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
     addDocToDepa(newDoc);
@@ -95,6 +97,8 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     }
     newDoc->doctorQueue = doctorQueue;
     createQueue(doctorQueue);
+        departments[newDoc->department-1].expenses+=newDoc->wage;
+    departments[newDoc->department-1].balence-=newDoc->wage;
 }
 
 doctor* assignDoc(patient *patient){
@@ -405,4 +409,32 @@ int checkPositionAvailibility(rank rank, department department) {
     }
 
     return 1; // Available
+}
+int wage(doctor *doctor){
+    switch (doctor->rank)
+    {
+    case 1:
+        return 20;
+        break;
+    case 2:
+        return 620;
+        break;
+        case 3:
+        return 1000;
+        break;
+    case 4:
+        return 1500;
+        break;
+    case 5:
+        return 2000;
+        break;
+    case 6:
+        return 2500;
+        break;
+    default:
+        break;
+    }
+        
+    
+    
 }

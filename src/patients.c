@@ -1,8 +1,6 @@
 #include "../headers/patients.h"
 #include "../headers/treePat.h"
 #include "../headers/departments.h"
-
-
 #include "../headers/doctors.h"
 #include <stdlib.h>
 #include <stdio.h>

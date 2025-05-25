@@ -10,7 +10,6 @@ void showHospitalStructureNav(){
     printf("1. Departments\n");
     printf("2. Balance\n");
     printf("3. Surgery Rooms\n");
-    printf("4. Pharmacy\n");
     printf("Enter your choice: ");
     int choice;
     scanf("%d", &choice);
@@ -44,6 +43,8 @@ void showDepa(){
 
         printf("Balance is %.2f $\n",departments[i].balence);
          printf("income is %.2f $\n",departments[i].income);
+        printf("expenses is %.2f $\n",departments[i].expenses);
+
 
         printf("--------------------------------------------------\n");
     
@@ -52,8 +53,9 @@ void showDepa(){
 };
 
 void showBalence(){
-    printf("The hospital balence is %d\n",departments[0].balence+departments[1].balence+departments[2].balence+departments[3].balence);
-    printf("The hospital income is %d\n",departments[0].income+departments[1].income+departments[2].income+departments[3].income);
+    printf("The hospital balence is %.2f\n",departments[0].balence+departments[1].balence+departments[2].balence+departments[3].balence);
+    printf("The hospital income is %.2f\n",departments[0].income+departments[1].income+departments[2].income+departments[3].income);
+    printf("The hospital expenses is %.2f\n",departments[0].expenses+departments[1].expenses+departments[2].expenses+departments[3].expenses);
 
     int choice;
 };
