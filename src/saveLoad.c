@@ -4,664 +4,192 @@
 #include "../headers/patients.h"
 #include "../headers/doctors.h"
 #include "../headers/departments.h"
-#include "../headers/queue.h"
-#include "../headers/stack.h"
 #include "../headers/treeDoc.h"
 #include "../headers/treePat.h"
 
 #define SAVE_FILE "hospital_data.dat"
-#define BACKUP_FILE "hpms_backup.hpms"
 
-// External variables from your modules
 extern int employeNum;
 extern int patientNum;
 extern doctor* doctors[200];
 extern patient* patients[200];
 extern departmentInfo departments[4];
-extern TreeNode *rootEmeDoc, *rootCarDoc, *rootPhyDoc;
-extern TreeNodePat *rootEmePat, *rootCarPat, *rootPhyPat;
-extern stack* top; // Assuming you have this
 
-// Helper structure for saving queue data
-typedef struct {
-    char patientId[15];
-    char patientName[30];
-    int age;
-    char medicalCase[200];
-    char address[150];
-    condition patientCondition;
-    department patientDepartment;
-    bool isAssured;
-    int sessionCost;
-} QueuePatientData;
+extern int *flipP;
+extern int *firstSearchP;
+extern int *flip;
+extern int *firstSearch;
 
-// Forward declarations
-int saveCounters(FILE* file);
-int saveArrays(FILE* file);
-int saveLinkedStructures(FILE* file);
-int loadCounters(FILE* file);
-int loadArrays(FILE* file);
-int loadLinkedStructures(FILE* file);
-void saveTreePreOrder(TreeNode* root, FILE* file, int* nodeCount);
-void saveTreePatPreOrder(TreeNodePat* root, FILE* file, int* nodeCount);
-TreeNode* loadTreePreOrder(FILE* file, int* nodeCount);
-TreeNodePat* loadTreePatPreOrder(FILE* file, int* nodeCount);
+extern TreeNode *rootEmeDoc;
+extern TreeNode *rootCarDoc;
+extern TreeNode *rootPhyDoc;
+extern TreeNodePat *rootEmePat;
+extern TreeNodePat *rootCarPat;
+extern TreeNodePat *rootPhyPat;
 
-// ==================== MAIN SAVE/LOAD FUNCTIONS ====================
+int saveAllData(void);
+int loadAllData(void);
+int saveData(FILE *file);
+int loadData(FILE *file);
+void cleanup(void);
+void rebuildTrees(void);
+
+// ===================== SAVE ======================
 
 int saveAllData(void) {
-    FILE* file = fopen(SAVE_FILE, "wb");
-    if (file == NULL) {
-        printf("Error: Cannot create save file '%s'!\n", SAVE_FILE);
+    FILE *file = fopen(SAVE_FILE, "wb");
+    if (!file) {
+        printf("Error: Cannot open file for saving.\n");
         return 0;
     }
 
-    printf("Saving hospital data...\n");
-
-    // Save in fixed order
-    if (!saveCounters(file)) {
-        printf("Error saving counters!\n");
-        fclose(file);
-        return 0;
-    }
-
-    if (!saveArrays(file)) {
-        printf("Error saving arrays!\n");
-        fclose(file);
-        return 0;
-    }
-
-    if (!saveLinkedStructures(file)) {
-        printf("Error saving linked structures!\n");
+    if (!saveData(file)) {
+        printf("Error saving data.\n");
         fclose(file);
         return 0;
     }
 
     fclose(file);
-    printf("✓ Data saved successfully to '%s'\n", SAVE_FILE);
-    
-    // Create backup
-    FILE* backup = fopen(BACKUP_FILE, "wb");
-    if (backup != NULL) {
-        FILE* source = fopen(SAVE_FILE, "rb");
-        if (source != NULL) {
-            char buffer[1024];
-            size_t bytes;
-            while ((bytes = fread(buffer, 1, sizeof(buffer), source)) > 0) {
-                fwrite(buffer, 1, bytes, backup);
-            }
-            fclose(source);
-            printf("✓ Backup created: '%s'\n", BACKUP_FILE);
-        }
-        fclose(backup);
-    }
-
+    printf("✓ Data saved successfully.\n");
     return 1;
 }
 
-int loadAllData(void) {
-    FILE* file = fopen(SAVE_FILE, "rb");
-    if (file == NULL) {
-        printf("Save file '%s' not found. Starting with empty data.\n", SAVE_FILE);
-        return 0;
-    }
-
-    printf("Loading hospital data...\n");
-
-    // Load in same order as saved
-    if (!loadCounters(file)) {
-        printf("Error loading counters!\n");
-        fclose(file);
-        return 0;
-    }
-
-    if (!loadArrays(file)) {
-        printf("Error loading arrays!\n");
-        fclose(file);
-        return 0;
-    }
-
-    if (!loadLinkedStructures(file)) {
-        printf("Error loading linked structures!\n");
-        fclose(file);
-        return 0;
-    }
-
-    fclose(file);
-    printf("✓ Data loaded successfully from '%s'\n", SAVE_FILE);
-    printf("  - Doctors loaded: %d\n", employeNum);
-    printf("  - Patients loaded: %d\n", patientNum);
-    
-    return 1;
-}
-
-// ==================== SAVE FUNCTIONS ====================
-
-int saveCounters(FILE* file) {
-    // Save all counter variables
+int saveData(FILE *file) {
+    // Save counts
     if (fwrite(&employeNum, sizeof(int), 1, file) != 1) return 0;
     if (fwrite(&patientNum, sizeof(int), 1, file) != 1) return 0;
-    
-    // Save department counts
-    for (int i = 0; i < 4; i++) {
-        if (fwrite(&departments[i].numDoc, sizeof(int), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].numPat, sizeof(int), 1, file) != 1) return 0;
-    }
-    
-    return 1;
-}
 
-int saveArrays(FILE* file) {
-    // Save doctor array data
+    // Save doctors
     for (int i = 0; i < employeNum; i++) {
-        if (doctors[i] != NULL) {
-            // Save doctor data field by field
-            if (fwrite(doctors[i]->name, sizeof(char), 30, file) != 30) return 0;
-            if (fwrite(&doctors[i]->age, sizeof(int), 1, file) != 1) return 0;
-            if (fwrite(doctors[i]->speciality, sizeof(char), 40, file) != 40) return 0;
-            if (fwrite(doctors[i]->address, sizeof(char), 150, file) != 150) return 0;
-            if (fwrite(&doctors[i]->rank, sizeof(rank), 1, file) != 1) return 0;
-            if (fwrite(&doctors[i]->numPatients, sizeof(int), 1, file) != 1) return 0;
-            if (fwrite(&doctors[i]->maxPatients, sizeof(int), 1, file) != 1) return 0;
-            if (fwrite(&doctors[i]->department, sizeof(department), 1, file) != 1) return 0;
-            if (fwrite(doctors[i]->id, sizeof(char), 14, file) != 14) return 0;
-            if (fwrite(&doctors[i]->wage, sizeof(int), 1, file) != 1) return 0;
-        }
+        if (fwrite(doctors[i], sizeof(doctor), 1, file) != 1) return 0;
     }
 
-    // Save patient array data
+    // Save patients
     for (int i = 0; i < patientNum; i++) {
-        if (patients[i] != NULL) {
-            // Save patient data field by field
-            if (fwrite(patients[i]->name, sizeof(char), 30, file) != 30) return 0;
-            if (fwrite(&patients[i]->age, sizeof(int), 1, file) != 1) return 0;
-            if (fwrite(patients[i]->medicalCase, sizeof(char), 200, file) != 200) return 0;
-            if (fwrite(patients[i]->address, sizeof(char), 150, file) != 150) return 0;
-            if (fwrite(&patients[i]->condition, sizeof(condition), 1, file) != 1) return 0;
-            if (fwrite(&patients[i]->department, sizeof(department), 1, file) != 1) return 0;
-            if (fwrite(patients[i]->id, sizeof(char), 14, file) != 14) return 0;
-            if (fwrite(&patients[i]->isAssured, sizeof(bool), 1, file) != 1) return 0;
-            if (fwrite(&patients[i]->sessionCost, sizeof(float), 1, file) != 1) return 0;
-            
-            // Save assigned doctor ID
-            if (patients[i]->assignedDoc != NULL) {
-                if (fwrite(patients[i]->assignedDoc->id, sizeof(char), 14, file) != 14) return 0;
-            } else {
-                char emptyId[14] = {0};
-                if (fwrite(emptyId, sizeof(char), 14, file) != 14) return 0;
-            }
-        }
-    }
-
-    // Save department data
-    for (int i = 0; i < 4; i++) {
-        if (fwrite(&departments[i].department, sizeof(int), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].numDoc, sizeof(int), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].numPat, sizeof(int), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].surgeryRoomsDepa, sizeof(int), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].patientRoomsDepa, sizeof(int), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].income, sizeof(float), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].expenses, sizeof(float), 1, file) != 1) return 0;
-        if (fwrite(&departments[i].balence, sizeof(float), 1, file) != 1) return 0;
+        patient temp = *patients[i];
+        temp.assignedDoc = NULL;  // avoid pointer serialization
+        if (fwrite(&temp, sizeof(patient), 1, file) != 1) return 0;
     }
 
     return 1;
 }
 
-int saveLinkedStructures(FILE* file) {
-    int treeNodeCount;
-    long countPos, endPos;
-    int placeholder = 0;
+// ===================== LOAD ======================
 
-    // ---- Emergency Doctor Tree ----
-    treeNodeCount = 0;
-    countPos = ftell(file);
-    if (fwrite(&placeholder, sizeof(int), 1, file) != 1) return 0;
-    saveTreePreOrder(rootEmeDoc, file, &treeNodeCount);
-    endPos = ftell(file);
-    fseek(file, countPos, SEEK_SET);
-    if (fwrite(&treeNodeCount, sizeof(int), 1, file) != 1) return 0;
-    fseek(file, endPos, SEEK_SET);
-
-    // ---- Cardiology Doctor Tree ----
-    treeNodeCount = 0;
-    countPos = ftell(file);
-    if (fwrite(&placeholder, sizeof(int), 1, file) != 1) return 0;
-    saveTreePreOrder(rootCarDoc, file, &treeNodeCount);
-    endPos = ftell(file);
-    fseek(file, countPos, SEEK_SET);
-    if (fwrite(&treeNodeCount, sizeof(int), 1, file) != 1) return 0;
-    fseek(file, endPos, SEEK_SET);
-
-    // ---- Physiology Doctor Tree ----
-    treeNodeCount = 0;
-    countPos = ftell(file);
-    if (fwrite(&placeholder, sizeof(int), 1, file) != 1) return 0;
-    saveTreePreOrder(rootPhyDoc, file, &treeNodeCount);
-    endPos = ftell(file);
-    fseek(file, countPos, SEEK_SET);
-    if (fwrite(&treeNodeCount, sizeof(int), 1, file) != 1) return 0;
-    fseek(file, endPos, SEEK_SET);
-
-    // ---- Emergency Patient Tree ----
-    treeNodeCount = 0;
-    countPos = ftell(file);
-    if (fwrite(&placeholder, sizeof(int), 1, file) != 1) return 0;
-    saveTreePatPreOrder(rootEmePat, file, &treeNodeCount);
-    endPos = ftell(file);
-    fseek(file, countPos, SEEK_SET);
-    if (fwrite(&treeNodeCount, sizeof(int), 1, file) != 1) return 0;
-    fseek(file, endPos, SEEK_SET);
-
-    // ---- Cardiology Patient Tree ----
-    treeNodeCount = 0;
-    countPos = ftell(file);
-    if (fwrite(&placeholder, sizeof(int), 1, file) != 1) return 0;
-    saveTreePatPreOrder(rootCarPat, file, &treeNodeCount);
-    endPos = ftell(file);
-    fseek(file, countPos, SEEK_SET);
-    if (fwrite(&treeNodeCount, sizeof(int), 1, file) != 1) return 0;
-    fseek(file, endPos, SEEK_SET);
-
-    // ---- Physiology Patient Tree ----
-    treeNodeCount = 0;
-    countPos = ftell(file);
-    if (fwrite(&placeholder, sizeof(int), 1, file) != 1) return 0;
-    saveTreePatPreOrder(rootPhyPat, file, &treeNodeCount);
-    endPos = ftell(file);
-    fseek(file, countPos, SEEK_SET);
-    if (fwrite(&treeNodeCount, sizeof(int), 1, file) != 1) return 0;
-    fseek(file, endPos, SEEK_SET);
-
-    // ---- Doctor Queues ----
-    for (int i = 0; i < employeNum; i++) {
-        if (doctors[i] != NULL && doctors[i]->doctorQueue != NULL) {
-            Queue* q = doctors[i]->doctorQueue;
-
-            // Count queue size
-            int queueSize = 0;
-            node* current = q->front;
-            while (current != NULL) {
-                queueSize++;
-                current = current->next;
-            }
-
-            // Write queue size
-            if (fwrite(&queueSize, sizeof(int), 1, file) != 1) {
-                perror("Error writing queue size");
-                return 0;
-            }
-
-            // Write queue data
-            current = q->front;
-            while (current != NULL) {
-                QueuePatientData qData;
-                strcpy(qData.patientId, current->patient->id);
-                strcpy(qData.patientName, current->patient->name);
-                qData.age = current->patient->age;
-                strcpy(qData.medicalCase, current->patient->medicalCase);
-                strcpy(qData.address, current->patient->address);
-                qData.patientCondition = current->patient->condition;
-                qData.patientDepartment = current->patient->department;
-                qData.isAssured = current->patient->isAssured;
-                qData.sessionCost = current->patient->sessionCost;
-
-                if (fwrite(&qData, sizeof(QueuePatientData), 1, file) != 1) {
-                    perror("Error writing queue data");
-                    return 0;
-                }
-
-                current = current->next;
-            }
-
-        } else {
-            // No queue, write 0
-            int queueSize = 0;
-            if (fwrite(&queueSize, sizeof(int), 1, file) != 1) {
-                perror("Error writing empty queue size");
-                return 0;
-            }
-        }
+int loadAllData(void) {
+    FILE *file = fopen(SAVE_FILE, "rb");
+    if (!file) {
+        printf("No save file found. Starting fresh.\n");
+        return 0;
     }
 
-    return 1;
-}
+    cleanup();
 
-
-// ==================== LOAD FUNCTIONS ====================
-
-int loadCounters(FILE* file) {
-    // Load counter variables
-    if (fread(&employeNum, sizeof(int), 1, file) != 1) return 0;
-    if (fread(&patientNum, sizeof(int), 1, file) != 1) return 0;
-    
-    // Load department counts
-    for (int i = 0; i < 4; i++) {
-        if (fread(&departments[i].numDoc, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&departments[i].numPat, sizeof(int), 1, file) != 1) return 0;
-    }
-    
-    return 1;
-}
-
-int loadArrays(FILE* file) {
-    // Load and recreate doctor array
-    for (int i = 0; i < employeNum; i++) {
-        doctors[i] = (doctor*)malloc(sizeof(doctor));
-        if (doctors[i] == NULL) {
-            printf("Memory allocation failed for doctor %d\n", i);
-            return 0;
-        }
-        
-        // Initialize pointers
-        doctors[i]->doctorQueue = NULL;
-        doctors[i]->patientsHead = NULL;
-        
-        // Load doctor data field by field
-        if (fread(doctors[i]->name, sizeof(char), 30, file) != 30) return 0;
-        if (fread(&doctors[i]->age, sizeof(int), 1, file) != 1) return 0;
-        if (fread(doctors[i]->speciality, sizeof(char), 40, file) != 40) return 0;
-        if (fread(doctors[i]->address, sizeof(char), 150, file) != 150) return 0;
-        if (fread(&doctors[i]->rank, sizeof(rank), 1, file) != 1) return 0;
-        if (fread(&doctors[i]->numPatients, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&doctors[i]->maxPatients, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&doctors[i]->department, sizeof(department), 1, file) != 1) return 0;
-        if (fread(doctors[i]->id, sizeof(char), 14, file) != 14) return 0;
-        if (fread(&doctors[i]->wage, sizeof(int), 1, file) != 1) return 0;
-    }
-
-    // Load and recreate patient array
-    for (int i = 0; i < patientNum; i++) {
-        patients[i] = (patient*)malloc(sizeof(patient));
-        if (patients[i] == NULL) {
-            printf("Memory allocation failed for patient %d\n", i);
-            return 0;
-        }
-        
-        // Initialize pointers and default values
-        patients[i]->assignedDoc = NULL;
-        memset(patients[i]->name, 0, sizeof(patients[i]->name));
-        memset(patients[i]->medicalCase, 0, sizeof(patients[i]->medicalCase));
-        memset(patients[i]->address, 0, sizeof(patients[i]->address));
-        memset(patients[i]->id, 0, sizeof(patients[i]->id));
-        patients[i]->age = 0;
-        patients[i]->condition = normal; // Default condition
-        patients[i]->department = 0;
-        patients[i]->isAssured = false;
-        patients[i]->sessionCost = 0.0f;
-        
-        // Load patient data field by field
-        if (fread(patients[i]->name, sizeof(char), 30, file) != 30) return 0;
-        if (fread(&patients[i]->age, sizeof(int), 1, file) != 1) return 0;
-        if (fread(patients[i]->medicalCase, sizeof(char), 200, file) != 200) return 0;
-        if (fread(patients[i]->address, sizeof(char), 150, file) != 150) return 0;
-        
-        // Load condition with validation
-        int tempCondition;
-        if (fread(&tempCondition, sizeof(int), 1, file) != 1) return 0;
-        if (tempCondition >= urgence && tempCondition <= visit) {
-            patients[i]->condition = (condition)tempCondition;
-        } else {
-            patients[i]->condition = normal; // Default to normal if invalid
-        }
-        
-        // Load department with validation
-        int tempDepartment;
-        if (fread(&tempDepartment, sizeof(int), 1, file) != 1) return 0;
-        if (tempDepartment >= 1 && tempDepartment <= 4) {
-            patients[i]->department = (department)tempDepartment;
-        } else {
-            patients[i]->department = 1; // Default to first department if invalid
-        }
-        
-        if (fread(patients[i]->id, sizeof(char), 14, file) != 14) return 0;
-        if (fread(&patients[i]->isAssured, sizeof(bool), 1, file) != 1) return 0;
-        if (fread(&patients[i]->sessionCost, sizeof(float), 1, file) != 1) return 0;
-        
-        // Load assigned doctor ID and find doctor
-        char doctorId[14] = {0};
-        if (fread(doctorId, sizeof(char), 14, file) != 14) return 0;
-        
-        // Find and assign doctor pointer
-        if (strlen(doctorId) > 0) {
-            for (int j = 0; j < employeNum; j++) {
-                if (doctors[j] != NULL && strcmp(doctors[j]->id, doctorId) == 0) {
-                    patients[i]->assignedDoc = doctors[j];
-                    break;
-                }
-            }
-        }
-    }
-
-    // Load department data
-    for (int i = 0; i < 4; i++) {
-        if (fread(&departments[i].department, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&departments[i].numDoc, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&departments[i].numPat, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&departments[i].surgeryRoomsDepa, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&departments[i].patientRoomsDepa, sizeof(int), 1, file) != 1) return 0;
-        if (fread(&departments[i].income, sizeof(float), 1, file) != 1) return 0;
-        if (fread(&departments[i].expenses, sizeof(float), 1, file) != 1) return 0;
-        if (fread(&departments[i].balence, sizeof(float), 1, file) != 1) return 0;
-        
-        // Initialize pointer arrays
-        memset(departments[i].doctors, 0, sizeof(departments[i].doctors));
-        memset(departments[i].patients, 0, sizeof(departments[i].patients));
-        
-        // Rebuild doctor and patient pointers
-        int docIndex = 0, patIndex = 0;
-        for (int j = 0; j < employeNum && docIndex < departments[i].numDoc; j++) {
-            if (doctors[j] != NULL && doctors[j]->department == i + 1) {
-                departments[i].doctors[docIndex++] = doctors[j];
-            }
-        }
-        
-        for (int j = 0; j < patientNum && patIndex < departments[i].numPat; j++) {
-            if (patients[j] != NULL && patients[j]->department == i + 1) {
-                departments[i].patients[patIndex++] = patients[j];
-            }
-        }
-    }
-
-    return 1;
-}
-
-int loadLinkedStructures(FILE* file) {
-    // Load Trees (simplified - would need full tree reconstruction logic)
-    // For now, trees will be rebuilt by re-inserting loaded doctors/patients
-    
-    // Rebuild doctor trees
-    rootEmeDoc = rootCarDoc = rootPhyDoc = NULL;
-    for (int i = 0; i < employeNum; i++) {
-        if (doctors[i]->department == 0) {
-            // Insert into emergency tree (simplified)
-        } else if (doctors[i]->department == 1) {
-            // Insert into cardiology tree
-        } else if (doctors[i]->department == 2) {
-            // Insert into physiology tree
-        }
-    }
-    
-    // Rebuild patient trees similarly
-    rootEmePat = rootCarPat = rootPhyPat = NULL;
-    
-    // Load and rebuild doctor queues
-    for (int i = 0; i < employeNum; i++) {
-        int queueSize;
-        if (fread(&queueSize, sizeof(int), 1, file) != 1) return 0;
-        
-        if (queueSize > 0) {
-            doctors[i]->doctorQueue = (Queue*)malloc(sizeof(Queue));
-            createQueue(doctors[i]->doctorQueue);
-            
-            for (int j = 0; j < queueSize; j++) {
-                QueuePatientData qData;
-                if (fread(&qData, sizeof(QueuePatientData), 1, file) != 1) return 0;
-                
-                // Find patient by ID and add to queue
-                for (int k = 0; k < patientNum; k++) {
-                    if (strcmp(patients[k]->id, qData.patientId) == 0) {
-                        enqueue(doctors[i]->doctorQueue, patients[k], doctors[i]);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return 1;
-}
-
-// ==================== TREE SAVE/LOAD HELPERS ====================
-
-void saveTreePreOrder(TreeNode* root, FILE* file, int* nodeCount) {
-    if (root == NULL) {
-        int marker = -1;
-        fwrite(&marker, sizeof(int), 1, file);
-        return;
-    }
-    
-    // Save doctor data
-    fwrite(root->doctor, sizeof(doctor), 1, file);
-    (*nodeCount)++;
-    
-    // Recursively save children
-    saveTreePreOrder(root->left, file, nodeCount);
-    saveTreePreOrder(root->right, file, nodeCount);
-}
-
-void saveTreePatPreOrder(TreeNodePat* root, FILE* file, int* nodeCount) {
-    if (root == NULL) {
-        int marker = -1;
-        fwrite(&marker, sizeof(int), 1, file);
-        return;
-    }
-    
-    // Save patient data (without assignedDoc pointer)
-    patient tempPatient = *root->patient;
-    tempPatient.assignedDoc = NULL;
-    fwrite(&tempPatient, sizeof(patient), 1, file);
-    (*nodeCount)++;
-    
-    // Recursively save children
-    saveTreePatPreOrder(root->left, file, nodeCount);
-    saveTreePatPreOrder(root->right, file, nodeCount);
-}
-
-// ==================== MENU INTEGRATION ====================
-
-void displayPersistenceMenu(void) {
-    printf("\n=== Data Management ===\n");
-    printf("1. Save All Data\n");
-    printf("2. Load All Data\n");
-    printf("3. Create Backup\n");
-    printf("4. Load from Backup\n");
-    printf("5. Auto-Save Settings\n");
-    printf("0. Return to Main Menu\n");
-    printf("Choice: ");
-}
-
-void handlePersistenceMenu(void) {
-    int choice;
-    scanf("%d", &choice);
-    
-    switch (choice) {
-        case 1:
-            if (saveAllData()) {
-                printf("✓ All hospital data saved successfully!\n");
-            } else {
-                printf("✗ Failed to save data!\n");
-            }
-            break;
-            
-        case 2:
-            if (loadAllData()) {
-                printf("✓ All hospital data loaded successfully!\n");
-            } else {
-                printf("✗ Failed to load data!\n");
-            }
-            break;
-            
-        case 3: {
-            FILE* source = fopen(SAVE_FILE, "rb");
-            FILE* backup = fopen(BACKUP_FILE, "wb");
-            if (source && backup) {
-                char buffer[1024];
-                size_t bytes;
-                while ((bytes = fread(buffer, 1, sizeof(buffer), source)) > 0) {
-                    fwrite(buffer, 1, bytes, backup);
-                }
-                printf("✓ Backup created successfully!\n");
-            } else {
-                printf("✗ Failed to create backup!\n");
-            }
-            if (source) fclose(source);
-            if (backup) fclose(backup);
-            break;
-        }
-        
-        case 4: {
-            FILE* backup = fopen(BACKUP_FILE, "rb");
-            FILE* main = fopen(SAVE_FILE, "wb");
-            if (backup && main) {
-                char buffer[1024];  
-                size_t bytes;
-                while ((bytes = fread(buffer, 1, sizeof(buffer), backup)) > 0) {
-                    fwrite(buffer, 1, bytes, main);
-                }
-                fclose(backup);
-                fclose(main);
-                if (loadAllData()) {
-                    printf("✓ Data restored from backup!\n");
-                }
-            } else {
-                printf("✗ Failed to restore from backup!\n");
-            }
-            break;
-        }
-        
-        case 5:
-            printf("Auto-save feature not implemented yet.\n");
-            break;
-            
-        case 0:
-            return;
-            
-        default:
-            printf("Invalid choice!\n");
-    }
-}
-
-// ==================== UTILITY FUNCTIONS ====================
-
-int validateSaveFile(void) {
-    FILE* file = fopen(SAVE_FILE, "rb");
-    if (file == NULL) return 0;
-    
-    // Basic validation - check if counters are reasonable
-    int empCount, patCount;
-    if (fread(&empCount, sizeof(int), 1, file) != 1 || 
-        fread(&patCount, sizeof(int), 1, file) != 1) {
+    if (!loadData(file)) {
+        printf("Error loading data.\n");
         fclose(file);
         return 0;
     }
-    
+
     fclose(file);
-    
-    // Check if counts are within reasonable bounds
-    return (empCount >= 0 && empCount <= 200 && 
-            patCount >= 0 && patCount <= 200);
+    rebuildTrees();
+    printf("✓ Data loaded successfully.\n");
+    return 1;
 }
 
-void printDataSummary(void) {
-    printf("\n=== Hospital Data Summary ===\n");
-    printf("Total Doctors: %d\n", employeNum);
-    printf("Total Patients: %d\n", patientNum);
-    
-    for (int i = 0; i < 4; i++) {
-        printf("Department %s:\n", departmentToString(i + 1));
-        printf("  - Doctors: %d\n", departments[i].numDoc);
-        printf("  - Patients: %d\n", departments[i].numPat);
-        printf("  - Balance: %d\n", departments[i].balence);
+int loadData(FILE *file) {
+    if (fread(&employeNum, sizeof(int), 1, file) != 1) return 0;
+    if (fread(&patientNum, sizeof(int), 1, file) != 1) return 0;
+
+    doctor tempDoctors[200];
+    patient tempPatients[200];
+    int docCount = employeNum;
+    int patCount = patientNum;
+    employeNum = 0;
+    patientNum = 0;
+
+    for (int i = 0; i < docCount; i++) {
+        if (fread(&tempDoctors[i], sizeof(doctor), 1, file) != 1) return 0;
     }
+
+    for (int i = 0; i < patCount; i++) {
+        if (fread(&tempPatients[i], sizeof(patient), 1, file) != 1) return 0;
+    }
+
+    for (int i = 0; i < docCount; i++) {
+        addDoctor(tempDoctors[i].name, tempDoctors[i].age, tempDoctors[i].speciality,
+                  tempDoctors[i].address, tempDoctors[i].rank, tempDoctors[i].department);
+        strncpy(doctors[i]->id, tempDoctors[i].id, 14);
+    }
+
+    for (int i = 0; i < patCount; i++) {
+        addPatient(tempPatients[i].name, tempPatients[i].age, tempPatients[i].medicalCase,
+                   tempPatients[i].address, tempPatients[i].condition, tempPatients[i].department,
+                   tempPatients[i].isAssured);
+        strncpy(patients[i]->id, tempPatients[i].id, 14);
+        patients[i]->sessionCost = tempPatients[i].sessionCost;
+    }
+
+    return 1;
+}
+
+// ===================== CLEANUP + TREE REBUILD ======================
+
+void cleanup(void) {
+    for (int i = 0; i < employeNum; i++) {
+        if (doctors[i]) {
+            free(doctors[i]);
+            doctors[i] = NULL;
+        }
+    }
+
+    for (int i = 0; i < patientNum; i++) {
+        if (patients[i]) {
+            free(patients[i]);
+            patients[i] = NULL;
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        memset(departments[i].doctors, 0, sizeof(departments[i].doctors));
+        memset(departments[i].patients, 0, sizeof(departments[i].patients));
+        departments[i].numDoc = 0;
+        departments[i].numPat = 0;
+    }
+
+    rootEmeDoc = rootCarDoc = rootPhyDoc = NULL;
+    rootEmePat = rootCarPat = rootPhyPat = NULL;
+    employeNum = 0;
+    patientNum = 0;
+}
+
+void rebuildTrees(void) {
+    int n = 0, f = 0, g = 0;
+    int *firstInsert = &n;
+    int *flip = &f;
+    int *firstSearch = &g;
+
+    for (int i = 0; i < employeNum; i++) {
+        doctor *d = doctors[i];
+        if (d->department == 0)
+            rootEmeDoc = insertTree(rootEmeDoc, d, d->id, d->rank, firstInsert, flip);
+        else if (d->department == 1)
+            rootCarDoc = insertTree(rootCarDoc, d, d->id, d->rank, firstInsert, flip);
+        else if (d->department == 2)
+            rootPhyDoc = insertTree(rootPhyDoc, d, d->id, d->rank, firstInsert, flip);
+        *firstInsert = 1;
+    }
+
+    for (int i = 0; i < patientNum; i++) {
+        patient *p = patients[i];
+        if (p->department == 0)
+            rootEmePat = insertTreePat(rootEmePat, p, p->id, p->condition, firstSearchP, flipP);
+        else if (p->department == 1)
+            rootCarPat = insertTreePat(rootCarPat, p, p->id, p->condition, firstSearchP, flipP);
+        else if (p->department == 2)
+            rootPhyPat = insertTreePat(rootPhyPat, p, p->id, p->condition, firstSearchP, flipP);
+        *firstSearch = 1;
+    }
+
+    printf("✓ Trees rebuilt successfully.\n");
 }
