@@ -1,8 +1,6 @@
 #include "../headers/departments.h"
 #include  "../headers/hospital.h"
 #include <stdio.h>
-
-// Assuming departments is defined as an external variable in another file
 extern departmentInfo departments[4];
 
 void showHospitalStructureNav(){
@@ -26,7 +24,8 @@ void showHospitalStructureNav(){
        
         default:
             printf("Invalid choice!\n");
-            break;
+            return;
+                        break;
     }
 };
 

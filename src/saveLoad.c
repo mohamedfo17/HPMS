@@ -1,4 +1,3 @@
-// persistence.c - Hospital Management System Data Persistence
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -153,40 +152,57 @@ int saveCounters(FILE* file) {
 }
 
 int saveArrays(FILE* file) {
-    // Save doctor array data (not pointers!)
+    // Save doctor array data
     for (int i = 0; i < employeNum; i++) {
         if (doctors[i] != NULL) {
-            // Save doctor data
-            if (fwrite(doctors[i], sizeof(doctor), 1, file) != 1) return 0;
+            // Save doctor data field by field
+            if (fwrite(doctors[i]->name, sizeof(char), 30, file) != 30) return 0;
+            if (fwrite(&doctors[i]->age, sizeof(int), 1, file) != 1) return 0;
+            if (fwrite(doctors[i]->speciality, sizeof(char), 40, file) != 40) return 0;
+            if (fwrite(doctors[i]->address, sizeof(char), 150, file) != 150) return 0;
+            if (fwrite(&doctors[i]->rank, sizeof(rank), 1, file) != 1) return 0;
+            if (fwrite(&doctors[i]->numPatients, sizeof(int), 1, file) != 1) return 0;
+            if (fwrite(&doctors[i]->maxPatients, sizeof(int), 1, file) != 1) return 0;
+            if (fwrite(&doctors[i]->department, sizeof(department), 1, file) != 1) return 0;
+            if (fwrite(doctors[i]->id, sizeof(char), 14, file) != 14) return 0;
+            if (fwrite(&doctors[i]->wage, sizeof(int), 1, file) != 1) return 0;
         }
     }
 
     // Save patient array data
     for (int i = 0; i < patientNum; i++) {
         if (patients[i] != NULL) {
-            // Save patient data (without assignedDoc pointer)
-            patient tempPatient = *patients[i];
-            tempPatient.assignedDoc = NULL; // Don't save pointer
-            if (fwrite(&tempPatient, sizeof(patient), 1, file) != 1) return 0;
+            // Save patient data field by field
+            if (fwrite(patients[i]->name, sizeof(char), 30, file) != 30) return 0;
+            if (fwrite(&patients[i]->age, sizeof(int), 1, file) != 1) return 0;
+            if (fwrite(patients[i]->medicalCase, sizeof(char), 200, file) != 200) return 0;
+            if (fwrite(patients[i]->address, sizeof(char), 150, file) != 150) return 0;
+            if (fwrite(&patients[i]->condition, sizeof(condition), 1, file) != 1) return 0;
+            if (fwrite(&patients[i]->department, sizeof(department), 1, file) != 1) return 0;
+            if (fwrite(patients[i]->id, sizeof(char), 14, file) != 14) return 0;
+            if (fwrite(&patients[i]->isAssured, sizeof(bool), 1, file) != 1) return 0;
+            if (fwrite(&patients[i]->sessionCost, sizeof(float), 1, file) != 1) return 0;
             
-            // Save assigned doctor ID separately
+            // Save assigned doctor ID
             if (patients[i]->assignedDoc != NULL) {
-                if (fwrite(patients[i]->assignedDoc->id, sizeof(char), 15, file) != 15) return 0;
+                if (fwrite(patients[i]->assignedDoc->id, sizeof(char), 14, file) != 14) return 0;
             } else {
-                char emptyId[15] = {0};
-                if (fwrite(emptyId, sizeof(char), 15, file) != 15) return 0;
+                char emptyId[14] = {0};
+                if (fwrite(emptyId, sizeof(char), 14, file) != 14) return 0;
             }
         }
     }
 
     // Save department data
     for (int i = 0; i < 4; i++) {
-        departmentInfo tempDept = departments[i];
-        // Clear pointers before saving
-        memset(tempDept.doctors, 0, sizeof(tempDept.doctors));
-        memset(tempDept.patients, 0, sizeof(tempDept.patients));
-        
-        if (fwrite(&tempDept, sizeof(departmentInfo), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].department, sizeof(int), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].numDoc, sizeof(int), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].numPat, sizeof(int), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].surgeryRoomsDepa, sizeof(int), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].patientRoomsDepa, sizeof(int), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].income, sizeof(float), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].expenses, sizeof(float), 1, file) != 1) return 0;
+        if (fwrite(&departments[i].balence, sizeof(float), 1, file) != 1) return 0;
     }
 
     return 1;
@@ -337,13 +353,21 @@ int loadArrays(FILE* file) {
             return 0;
         }
         
-        if (fread(doctors[i], sizeof(doctor), 1, file) != 1) {
-            free(doctors[i]);
-            return 0;
-        }
-        
-        // Initialize queue pointer (will be rebuilt later)
+        // Initialize pointers
         doctors[i]->doctorQueue = NULL;
+        doctors[i]->patientsHead = NULL;
+        
+        // Load doctor data field by field
+        if (fread(doctors[i]->name, sizeof(char), 30, file) != 30) return 0;
+        if (fread(&doctors[i]->age, sizeof(int), 1, file) != 1) return 0;
+        if (fread(doctors[i]->speciality, sizeof(char), 40, file) != 40) return 0;
+        if (fread(doctors[i]->address, sizeof(char), 150, file) != 150) return 0;
+        if (fread(&doctors[i]->rank, sizeof(rank), 1, file) != 1) return 0;
+        if (fread(&doctors[i]->numPatients, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&doctors[i]->maxPatients, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&doctors[i]->department, sizeof(department), 1, file) != 1) return 0;
+        if (fread(doctors[i]->id, sizeof(char), 14, file) != 14) return 0;
+        if (fread(&doctors[i]->wage, sizeof(int), 1, file) != 1) return 0;
     }
 
     // Load and recreate patient array
@@ -354,20 +378,54 @@ int loadArrays(FILE* file) {
             return 0;
         }
         
-        if (fread(patients[i], sizeof(patient), 1, file) != 1) {
-            free(patients[i]);
-            return 0;
+        // Initialize pointers and default values
+        patients[i]->assignedDoc = NULL;
+        memset(patients[i]->name, 0, sizeof(patients[i]->name));
+        memset(patients[i]->medicalCase, 0, sizeof(patients[i]->medicalCase));
+        memset(patients[i]->address, 0, sizeof(patients[i]->address));
+        memset(patients[i]->id, 0, sizeof(patients[i]->id));
+        patients[i]->age = 0;
+        patients[i]->condition = normal; // Default condition
+        patients[i]->department = 0;
+        patients[i]->isAssured = false;
+        patients[i]->sessionCost = 0.0f;
+        
+        // Load patient data field by field
+        if (fread(patients[i]->name, sizeof(char), 30, file) != 30) return 0;
+        if (fread(&patients[i]->age, sizeof(int), 1, file) != 1) return 0;
+        if (fread(patients[i]->medicalCase, sizeof(char), 200, file) != 200) return 0;
+        if (fread(patients[i]->address, sizeof(char), 150, file) != 150) return 0;
+        
+        // Load condition with validation
+        int tempCondition;
+        if (fread(&tempCondition, sizeof(int), 1, file) != 1) return 0;
+        if (tempCondition >= urgence && tempCondition <= visit) {
+            patients[i]->condition = (condition)tempCondition;
+        } else {
+            patients[i]->condition = normal; // Default to normal if invalid
         }
         
-        // Load assigned doctor ID
-        char doctorId[15];
-        if (fread(doctorId, sizeof(char), 15, file) != 15) return 0;
+        // Load department with validation
+        int tempDepartment;
+        if (fread(&tempDepartment, sizeof(int), 1, file) != 1) return 0;
+        if (tempDepartment >= 1 && tempDepartment <= 4) {
+            patients[i]->department = (department)tempDepartment;
+        } else {
+            patients[i]->department = 1; // Default to first department if invalid
+        }
+        
+        if (fread(patients[i]->id, sizeof(char), 14, file) != 14) return 0;
+        if (fread(&patients[i]->isAssured, sizeof(bool), 1, file) != 1) return 0;
+        if (fread(&patients[i]->sessionCost, sizeof(float), 1, file) != 1) return 0;
+        
+        // Load assigned doctor ID and find doctor
+        char doctorId[14] = {0};
+        if (fread(doctorId, sizeof(char), 14, file) != 14) return 0;
         
         // Find and assign doctor pointer
-        patients[i]->assignedDoc = NULL;
         if (strlen(doctorId) > 0) {
             for (int j = 0; j < employeNum; j++) {
-                if (strcmp(doctors[j]->id, doctorId) == 0) {
+                if (doctors[j] != NULL && strcmp(doctors[j]->id, doctorId) == 0) {
                     patients[i]->assignedDoc = doctors[j];
                     break;
                 }
@@ -377,29 +435,29 @@ int loadArrays(FILE* file) {
 
     // Load department data
     for (int i = 0; i < 4; i++) {
-        departmentInfo tempDept;
-        if (fread(&tempDept, sizeof(departmentInfo), 1, file) != 1) return 0;
+        if (fread(&departments[i].department, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&departments[i].numDoc, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&departments[i].numPat, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&departments[i].surgeryRoomsDepa, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&departments[i].patientRoomsDepa, sizeof(int), 1, file) != 1) return 0;
+        if (fread(&departments[i].income, sizeof(float), 1, file) != 1) return 0;
+        if (fread(&departments[i].expenses, sizeof(float), 1, file) != 1) return 0;
+        if (fread(&departments[i].balence, sizeof(float), 1, file) != 1) return 0;
         
-        // Copy non-pointer data
-        departments[i].department = tempDept.department;
-        departments[i].numDoc = tempDept.numDoc;
-        departments[i].numPat = tempDept.numPat;
-        departments[i].surgeryRoomsDepa = tempDept.surgeryRoomsDepa;
-        departments[i].patientRoomsDepa = tempDept.patientRoomsDepa;
-        departments[i].income = tempDept.income;
-        departments[i].expenses = tempDept.expenses;
-        departments[i].balence = tempDept.balence;
+        // Initialize pointer arrays
+        memset(departments[i].doctors, 0, sizeof(departments[i].doctors));
+        memset(departments[i].patients, 0, sizeof(departments[i].patients));
         
         // Rebuild doctor and patient pointers
         int docIndex = 0, patIndex = 0;
         for (int j = 0; j < employeNum && docIndex < departments[i].numDoc; j++) {
-            if (doctors[j]->department == i + 1) {
+            if (doctors[j] != NULL && doctors[j]->department == i + 1) {
                 departments[i].doctors[docIndex++] = doctors[j];
             }
         }
         
         for (int j = 0; j < patientNum && patIndex < departments[i].numPat; j++) {
-            if (patients[j]->department == i + 1) {
+            if (patients[j] != NULL && patients[j]->department == i + 1) {
                 departments[i].patients[patIndex++] = patients[j];
             }
         }

@@ -2,6 +2,8 @@
 #include "../headers/treePat.h"
 #include "../headers/departments.h"
 #include "../headers/doctors.h"
+#include "../headers/linked.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -75,9 +77,9 @@ void viewAllPatients(){
         printf("-The patient number %d is %s\n",i+1,patients[i]->name);
     }} else if(choice==2){
         for (int i = 0; i < patientNum; i++)
-    {       printf("-The patient number %d is %s\n",patients[i]->name);
+    {       printf("-The patient number %d is %s\n",i+1,patients[i]->name);
             printf("   Id : %s\n",patients[i]->id);
-            printf("   Age : %d\n",i+1,patients[i]->age);
+            printf("   Age : %d\n",patients[i]->age);
             printf("   Address : %s\n",patients[i]->address);
             printf("   Doctor : %s\n",patients[i]->assignedDoc);
             printf("   Condition : %s\n",conditionToString((patients[i]->age)));
@@ -252,6 +254,7 @@ void deletePat(char id[14],condition searchCondition,department searchDepartment
     }
     patientNum--;
     deletePatientFromDepa(patient);
+    deleteList(&(patient->assignedDoc->patientsHead), patient);
 }
 
 int sessionCost(patient *patient){

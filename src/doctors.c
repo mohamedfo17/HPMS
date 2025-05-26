@@ -2,6 +2,7 @@
 #include "../headers/treeDoc.h"
 #include "../headers/departments.h"
 #include "../headers/queue.h"
+#include "../headers/linked.h"
 
 
 
@@ -99,6 +100,7 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     createQueue(doctorQueue);
         departments[newDoc->department-1].expenses+=newDoc->wage;
     departments[newDoc->department-1].balence-=newDoc->wage;
+    newDoc->patientsHead = NULL;
 }
 
 doctor* assignDoc(patient *patient){
@@ -130,6 +132,8 @@ doctor* assignDoc(patient *patient){
             assignedDoc->numPatients++;
             patient->assignedDoc=assignedDoc;
             enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
+            insertList(&(assignedDoc->patientsHead), patient);
+
             return assignedDoc;
             //add to queue
           }    
@@ -159,6 +163,7 @@ doctor* assignDoc(patient *patient){
           assignedDoc->numPatients++;
           patient->assignedDoc=assignedDoc;
           enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
+          insertList(&(assignedDoc->patientsHead), patient);
 
           return assignedDoc;
           //add to queue
@@ -189,6 +194,7 @@ doctor* assignDoc(patient *patient){
           assignedDoc->numPatients++;
           patient->assignedDoc=assignedDoc;
           enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
+          insertList(&(assignedDoc->patientsHead), patient);
 
           return assignedDoc;
           //add to queue
@@ -219,6 +225,7 @@ doctor* assignDoc(patient *patient){
           assignedDoc->numPatients++;
           patient->assignedDoc=assignedDoc;
           enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
+          insertList(&(assignedDoc->patientsHead), patient);
           return assignedDoc;
           //add to queue
         }    
@@ -443,7 +450,59 @@ int wage(doctor *doctor){
     default:
         break;
     }
-        
+
     
+}
+void viewDocAllPatients() {
+    char name[30];
+
+    // Flush input buffer just in case
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+    printf("Enter doctor name to view all his patients: ");
+    if (fgets(name, sizeof(name), stdin) == NULL) {
+        printf("Error reading input.\n");
+        return;
+    }
+
+    // Remove newline character if present
+    name[strcspn(name, "\n")] = '\0';
+
+    // Search for doctor
+    doctor *doc = NULL;
+    for (int i = 0; i < employeNum; i++) {
+        if (doctors[i] != NULL && strcmp(doctors[i]->name, name) == 0) {
+            doc = doctors[i];
+            break;
+        }
+    }
+
+    if (doc == NULL) {
+        printf("Doctor not found.\n");
+        return;
+    }
+
+    printf("\nDoctor %s has the following patients:\n", doc->name);
+
+    if (doc->patientsHead == NULL) {
+        printf("No patients assigned to this doctor.\n");
+        return;
+    }
+
+    // Traverse and print the list
+    list *current = doc->patientsHead;
+    int patientCount = 1;
     
+    while (current != NULL) {
+        if (current->pat != NULL) {
+            printf("%d. %s (Condition: %d)\n", 
+                   patientCount++, 
+                   current->pat->name,
+                   current->pat->condition);
+        } else {
+            printf("%d. [Corrupted patient data]\n", patientCount++);
+        }
+        current = current->next;
+    }
 }

@@ -22,6 +22,7 @@ typedef struct doctor {
     char id[14];
     struct Queue *doctorQueue; // Pointer to the queue
     int wage;
+    struct list *patientsHead;
 } doctor;
 
 extern int employeNum;  // Declare the global variable
@@ -43,4 +44,6 @@ void updateDoctorDepartment(doctor *doctor, department department);
 void updateDoctor(doctor *doctor, char name[30], int age, char specialty[200], char address[150], rank rank, department department);
 int checkPositionAvailibility(rank rank,department department);
 int wage(doctor *doctor);
+void viewDocAllPatients(); 
+
 #endif

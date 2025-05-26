@@ -11,6 +11,10 @@
 #include "../headers/queue.h"
 #include "../headers/stack.h"
 #include "../headers/saveLoad.h"
+#include "../headers/resources.h"
+#include "../headers/linked.h"
+
+
 
 
 
@@ -56,7 +60,7 @@ void addPatientNav() {
     printf("   4. Visit\n");
     printf("Enter choice (1-4): ");
     scanf("%d", &conditionChoice);
-    
+    if(checkRange(conditionChoice,1,4)){
     // Convert the choice to the condition enum
     switch(conditionChoice) {
         case 1:
@@ -71,9 +75,9 @@ void addPatientNav() {
         case 4:
             patientCondition = visit;
             break;
-        default:
-            patientCondition = normal; // Default
-            printf("Invalid choice, setting to Normal.\n");
+    }}else{
+        printf("wrong choice \n");
+        homePage();
     }
     
     while (getchar() != '\n'); // Clear input buffer
@@ -85,8 +89,8 @@ void addPatientNav() {
     printf("   4. neurology\n");
     printf("Enter choice (1-4): ");
     scanf("%d", &departmentChoice);
-    
-    // Convert the choice to the department enum
+        if(checkRange(departmentChoice,1,4)){
+
     switch(departmentChoice) {
         case 1:
             patientDepartment = lab;
@@ -100,9 +104,9 @@ void addPatientNav() {
         case 4:
             patientDepartment = neurology;
             break;
-        default:
-            patientDepartment = neurology; // Default
-            printf("Invalid choice, setting to neurology.\n");
+    }}else{
+        printf("wrong choice \n");
+        homePage();
     }
     printf("7-does the client have assurance plan ?:\n");
     printf("   1. Yes\n");
@@ -201,7 +205,7 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
             printf("Enter choice (1-4): ");
             scanf("%d", &conditionChoice);
             while (getchar() != '\n');
-         
+         if(checkRange(conditionChoice,1,4)){
             switch(conditionChoice) {
                 case 1: patientCondition = urgence; break;
                 case 2: patientCondition = danger; break;
@@ -212,7 +216,11 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
                     printf("Invalid choice, setting to Normal.\n");
             }
             updatePatientCondition(patient, patientCondition,patient->department);
-            break;
+            break;}else{
+
+                  printf("wrong choice \n");
+        homePage();
+            }
             
         case 6: // Edit Department
             printf("Select new patient department:\n");
@@ -223,18 +231,18 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
             printf("Enter choice (1-4): ");
             scanf("%d", &departmentChoice);
             while (getchar() != '\n');
-            
+             if(checkRange(departmentChoice,1,4)){
             switch(departmentChoice) {
                 case 1: patientDepartment = lab; break;
                 case 2: patientDepartment = cardiology; break;
                 case 3: patientDepartment = physiology; break;
                 case 4: patientDepartment = neurology; break;
-                default:
-                    patientDepartment = neurology;
-                    printf("Invalid choice, setting to neurology.\n");
             }
             updatePatientDepartment(patient, patientDepartment);
-            break;
+            break;}else{
+        printf("wrong choice \n");
+        homePage();
+}
             
         case 7: // Edit All Information
             printf("Enter new name: ");
@@ -261,16 +269,16 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
             printf("Enter choice (1-4): ");
             scanf("%d", &conditionChoice);
             while (getchar() != '\n');
-            
+            if(checkRange(conditionChoice,1,4)){
             switch(conditionChoice) {
                 case 1: patientCondition = urgence; break;
                 case 2: patientCondition = danger; break;
                 case 3: patientCondition = normal; break;
                 case 4: patientCondition = visit; break;
-                default:
-                    patientCondition = normal;
-                    printf("Invalid choice, setting to Normal.\n");
-            }
+            }}else{
+        printf("wrong choice \n");
+        homePage();
+}
             
             printf("Select new patient department:\n");
             printf("   1. Lab\n");
@@ -280,7 +288,7 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
             printf("Enter choice (1-4): ");
             scanf("%d", &departmentChoice);
             while (getchar() != '\n');
-            
+            if(checkRange(departmentChoice,1,4)){
             switch(departmentChoice) {
                 case 1: patientDepartment = lab; break;
                 case 2: patientDepartment = cardiology; break;
@@ -289,8 +297,11 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
                 default:
                     patientDepartment = neurology;
                     printf("Invalid choice, setting to neurology.\n");
-            }
-            
+            }}
+            else{
+        printf("wrong choice \n");
+        homePage();
+}
             // Update all patient information at once
             updatePatient(patient, name, age, medicalCase, address, patientCondition, patientDepartment);
             break;
@@ -316,9 +327,19 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
     if (len > 0 && id[len - 1] == '\n') {
         id[len - 1] = '\0';};
     condition deleteCondition;
-    scanf("%d", &deleteCondition);
+    if(checkRange(deleteCondition,1,4)){
+    scanf("%d", &deleteCondition);}else{
+        printf("wrong choice \n");
+        homePage();
+    }
     department deleteDepartment;
-    scanf("%d", &deleteDepartment);
+        if(checkRange(deleteCondition,1,4)){
+    scanf("%d", &deleteDepartment);  }
+    else{
+        printf("wrong choice \n");
+        homePage();
+    }
+
     deletePat(id,deleteCondition,deleteDepartment);
 };
 void viewPatientNav(){
@@ -808,12 +829,14 @@ void manageDoctors() {
     printf("3. View Doctor\n");
     printf("4. Delete Doctor\n");
     printf("5. View All Doctors\n");
-    printf("6. Back\n");
+    printf("6. view doctor all patients\n");
+    printf("7. Back\n");
     printf("Choose an option: ");
     
     int choice;
     scanf("%d", &choice);
-    
+    int c;
+while ((c = getchar()) != '\n' && c != EOF);
     switch (choice) {
     case 1:
         addDoctorNav();
@@ -831,11 +854,16 @@ void manageDoctors() {
         viewAllDoctors();
         break;
     case 6:
-        homePage();  // Return to main menu
+        int c;
+while ((c = getchar()) != '\n' && c != EOF);
+        viewDocAllPatients(); 
+        break;
+    case 7:
+        homePage(); 
         break;
     default:
-        printf("Invalid option! Please try again.\n");
-        manageDoctors();  
+        printf("Invalid option!\n");
+        exit(-1);
         break;
     }
 }
@@ -872,8 +900,8 @@ void managePatients() {
         homePage();  // Return to main menu
         break;
     default:
-        printf("Invalid option! Please try again.\n");
-        managePatients();  
+         printf("Invalid option!\n");
+        exit(-1);//prevent infinite loop 
         break;
     }
 
@@ -949,12 +977,16 @@ void managePatients() {
                 printf("No doctor found with name: %s\n", name);
                 return;
             }
+        }else{
+            printf("Invalid choice.\n");
+            exit(-1);
         }
 
         if (choice == 1) {
             // Declare end of session
             printf("Ending session for doctor: %s\n", doc->name);
             patient *p = dequeue(doc->doctorQueue);  // Only here we modify the queue
+            deleteList(&(doc->patientsHead),p);
             
             if (p != NULL) {
                
@@ -992,6 +1024,7 @@ void managePatients() {
                 case 3:
                     printf("patient %s has another appointment with doctor %s\n",p->name,p->assignedDoc->name);
                     enqueue(doc->doctorQueue,p,p->assignedDoc);
+                    insertList(&(doc->patientsHead), p);
                 break;
                 case 4:
                     printf("patient %s is sent to another hospital\n",p->name);
@@ -1006,10 +1039,9 @@ void managePatients() {
                 
             }
         } else {
-            // See doctor schedules
             printf("Doctor schedule for %s:\n", doc->name);
             printf("Total patients: %d\n", doc->numPatients);
-            displayDoctorSchedule(doc->doctorQueue);  // ✅ Safe, no dequeue
+            displayDoctorSchedule(doc->doctorQueue); 
         }
     } else {
         printf("Invalid choice.\n");
@@ -1084,9 +1116,8 @@ void viewWaitingQueue(){
         exit(0);
         break;
     default:
-        printf("Invalid option! Please try again.\n");
-        homePage();  
-        break;
+        printf("Invalid option!\n");
+        exit(-1);
     }}
 }
 

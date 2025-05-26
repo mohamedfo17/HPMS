@@ -14,6 +14,8 @@
         "stack.h": "c",
         "saveload.h": "c",
         "customer.h": "c",
-        "pharm.h": "c"
+        "pharm.h": "c",
+        "time.h": "c",
+        "linked.h": "c"
     }
 }
