@@ -346,20 +346,16 @@ void viewPatientNav(){
     printf("enter id of patient you want to view\n and his condition \n ");
     char id[15];
     int ch;
-while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+while ((ch = getchar()) != '\n' && ch != EOF); 
 
     fgets(id, sizeof(id), stdin);
-    
-    // Remove newline if present
     size_t len = strlen(id);
     if (len > 0 && id[len - 1] == '\n') {
         id[len - 1] = '\0';
     }
     condition searchCondition;
     scanf("%d", &searchCondition);
-    
 
-    //find patient
     patient *patient = findPatientById(id,searchCondition);
     if (patient->id == NULL) {
         printf("No patient found with ID: %s\n", id);
@@ -370,9 +366,8 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
     printf("Age: %d\n", patient->age);
     printf("Medical Case: %s\n", patient->medicalCase);
     printf("Address: %s\n", patient->address);
-    printf("Condition: %s\n", conditionToString(patient->condition)); // Convert enum to string
-    printf("Department: %s\n", departmentToString(patient->department)); // Ensure departmentToString is defined and returns a valid string
-    // Ensure departmentToString is defined and returns a valid string
+    printf("Condition: %s\n", conditionToString(patient->condition));
+    printf("Department: %s\n", departmentToString(patient->department));
     printf("-----------------------\n");
 
 };
@@ -770,7 +765,7 @@ void dischargePatient(stack **top){
     patient *pat = NULL;
 
     int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+    while ((ch = getchar()) != '\n' && ch != EOF); 
 
     if (subChoice == 1) {
         printf("Enter condition (1-4): ");
@@ -835,8 +830,7 @@ void manageDoctors() {
     
     int choice;
     scanf("%d", &choice);
-    int c;
-while ((c = getchar()) != '\n' && c != EOF);
+
     switch (choice) {
     case 1:
         addDoctorNav();
@@ -854,8 +848,7 @@ while ((c = getchar()) != '\n' && c != EOF);
         viewAllDoctors();
         break;
     case 6:
-        int c;
-while ((c = getchar()) != '\n' && c != EOF);
+
         viewDocAllPatients(); 
         break;
     case 7:
@@ -1060,6 +1053,31 @@ void viewWaitingQueue(){
     }
     
 };
+void patientRepoNav(){
+    int choice;
+    
+    printf("\n=== PATIENT REPORT GENERATOR ===\n");
+    printf("1. Generate All Patients Report\n");
+    printf("2. Generate Single Patient Report\n");
+    printf("3. Exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    
+    switch(choice) {
+        case 1:
+            generateRepo();
+            break;
+        case 2:
+            generateOneRepo();
+            break;
+        case 3:
+            printf("Returning to main menu...\n");
+            break;
+        default:
+            printf("Invalid choice!\n");
+            exit(-1);
+        }
+};
 
  void homePage() {
 
@@ -1079,7 +1097,8 @@ void viewWaitingQueue(){
     printf("7. View Hospital Structure Tree\n");
     printf("8.Save Data to File\n");
     printf("9. Load Data from File\n");
-    printf("10. Exit\n");
+     printf("10.Generate reports\n");
+    printf("11. Exit\n");
     int n;
     scanf("%d",&n);
     switch (n)
@@ -1112,8 +1131,11 @@ void viewWaitingQueue(){
     case 9:
         loadAllData();
         break;
-    case 10:
+    case 11:
         exit(0);
+        break;
+        case 10:
+        patientRepoNav();
         break;
     default:
         printf("Invalid option!\n");

@@ -289,3 +289,84 @@ int sessionCost(patient *patient){
     
     
 }
+void generateRepo() {
+    FILE *file = fopen("completed_patients_report.txt", "w");
+    if (file == NULL) {
+        printf("Error: Could not create report file\n");
+        return;
+    }
+    
+    fprintf(file, "     COMPLETED PATIENTS REPORT       \n");
+    
+    fprintf(file, "Total Patients: %d\n\n", patientNum);
+    
+    for (int i = 0; i < patientNum; i++) {
+        patient *pat = patients[i];
+        
+        fprintf(file, "--- PATIENT %d ---\n", i + 1);
+        fprintf(file, "ID: %s\n", pat->id);
+        fprintf(file, "Name: %s\n", pat->name);
+        fprintf(file, "Age: %d\n", pat->age);
+        fprintf(file, "Address: %s\n", pat->address);
+        fprintf(file, "Medical Case: %s\n", pat->medicalCase);
+        fprintf(file, "Condition: %s\n", conditionToString(pat->condition));
+        fprintf(file, "Department: %s\n", departmentToString(pat->department));
+        fprintf(file, "\n");
+    }
+    
+    fprintf(file, "           END OF REPORT             \n");
+    
+    fclose(file);
+    printf("Report generated successfully: completed_patients_report.txt\n");
+}
+
+void generateOneRepo(){
+ int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+  
+    char patientId[15];
+    printf("Enter Patient ID: ");
+    scanf("%s", patientId);
+    
+    patient *foundPatient = NULL;
+    
+    // Search for patient in the array
+    for (int i = 0; i < patientNum; i++) {
+        if (strcmp(patients[i]->id, patientId) == 0) {
+            foundPatient = patients[i];
+            break;
+        }
+    }
+    
+    if (foundPatient == NULL) {
+        printf("Patient with ID '%s' not found!\n", patientId);
+        return;
+    }
+    
+    // Create filename based on patient ID
+    char filename[50];
+    sprintf(filename, "patient_%s_report.txt", patientId);
+    
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error: Could not create report file\n");
+        return;
+    }
+        fprintf(file, "      INDIVIDUAL PATIENT REPORT      \n");
+    
+    fprintf(file, "--- PATIENT INFORMATION ---\n");
+    fprintf(file, "ID: %s\n", foundPatient->id);
+    fprintf(file, "Name: %s\n", foundPatient->name);
+    fprintf(file, "Age: %d\n", foundPatient->age);
+    fprintf(file, "Address: %s\n", foundPatient->address);
+    fprintf(file, "\n--- MEDICAL INFORMATION ---\n");
+    fprintf(file, "Medical Case: %s\n", foundPatient->medicalCase);
+    fprintf(file, "Condition: %s\n", conditionToString(foundPatient->condition));
+    fprintf(file, "Department: %s\n", departmentToString(foundPatient->department));
+    
+    fprintf(file, "           END OF REPORT             \n");
+    
+    fclose(file);
+    printf("Patient report generated successfully: %s\n", filename);
+
+};

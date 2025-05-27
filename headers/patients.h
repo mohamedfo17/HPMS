@@ -46,6 +46,10 @@ void deletePat(char id[14],condition searchCondition,department searchDepartment
 
 int sessionCost(patient *patient);
 
+void generateRepo();
+void generateOneRepo();
+
+
 
 
 #endif

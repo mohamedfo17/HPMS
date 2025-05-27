@@ -27,5 +27,6 @@ void addDoctorNav();
 void editDoctorNav();
 void viewDoctorNav();
 void deleteDoctorNav();
+void patientRepoNav();
 
 #endif

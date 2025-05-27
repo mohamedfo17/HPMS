@@ -1,0 +1,15 @@
+=====================================
+      INDIVIDUAL PATIENT REPORT      
+=====================================
+
+--- PATIENT INFORMATION ---
+ID: asd__021100000
+Name: asd
+Age: 21
+Address: sadasd
+
+--- MEDICAL INFORMATION ---
+Medical Case: fsdf
+Condition: urgence
+Department: Lab
+           END OF REPORT             
