@@ -12,6 +12,7 @@
 TreeNode *rootEmeDoc=NULL;
 TreeNode *rootCarDoc=NULL;
 TreeNode *rootPhyDoc=NULL;
+TreeNode *rootNeuDoc=NULL;
 int n=0;
 int *firstInsert=&n;
 int f=0;
@@ -79,14 +80,18 @@ void addDoctor(char name[30], int age, char speciality[30], char address[150], r
     initId(newDoc->id, name, age, rank, employeNum);
     doctors[employeNum] = newDoc;  // Store pointer in array
     addDocToDepa(newDoc);
-    if (newDoc->department == 0) {
+    if (newDoc->department == 1) {
         rootEmeDoc = insertTree(rootEmeDoc, newDoc,newDoc->id, rank,firstInsert,flip);
         *firstInsert=1;
-    } else if (newDoc->department == 1) {
+    } else if (newDoc->department == 2) {
         rootCarDoc = insertTree( rootCarDoc,newDoc, newDoc->id, rank,firstInsert,flip);
         *firstInsert=1;
     } else if (newDoc->department == 2) {
         rootPhyDoc = insertTree(rootPhyDoc, newDoc,newDoc->id, rank,firstInsert,flip);
+        *firstInsert=1;    
+    } 
+    else if (newDoc->department == 4) {
+        rootNeuDoc = insertTree(rootPhyDoc, newDoc,newDoc->id, rank,firstInsert,flip);
         *firstInsert=1;    
     } ;
     employeNum++;
@@ -257,6 +262,9 @@ doctor* findDocById(char id[14],rank searchRank) {
     if (foundNode == NULL && rootPhyDoc != NULL) {
         foundNode = search(rootPhyDoc, id, searchRank, firstSearch);
     }
+     if (foundNode == NULL && rootNeuDoc != NULL) {
+        foundNode = search(rootNeuDoc, id, searchRank, firstSearch);
+    }
     return foundNode;
 
 }
@@ -268,12 +276,14 @@ void deleteDoc(char id[14], department searchDepartment, rank searchRank) {
             break;
         }
     }
-    if (searchDepartment == 0) {
+    if (searchDepartment == 1) {
         rootEmeDoc = deleteNode(rootEmeDoc, id, searchRank, firstSearch);
-    } else if (searchDepartment == 1) {
-        rootCarDoc = deleteNode(rootCarDoc, id, searchRank, firstSearch);
     } else if (searchDepartment == 2) {
+        rootCarDoc = deleteNode(rootCarDoc, id, searchRank, firstSearch);
+    } else if (searchDepartment ==3) {
         rootPhyDoc = deleteNode(rootPhyDoc, id, searchRank, firstSearch);
+    }else if (searchDepartment ==4) {
+        rootNeuDoc = deleteNode(rootNeuDoc, id, searchRank, firstSearch);
     }
     employeNum--;
     deleteDocFromDepa(doc);
@@ -345,16 +355,19 @@ void updateDoctorRank(doctor *doctor, rank rank, department department) {
 
     doctor->rank = rank;
 
-    if (doctor->department == 0) {
+    if (doctor->department ==1) {
         rootEmeDoc = insertTree(rootEmeDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    } else if (doctor->department == 1) {
+    } else if (doctor->department == 2) {
         rootCarDoc = insertTree(rootCarDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    } else if (doctor->department == 2) {
+    } else if (doctor->department == 3) {
         rootPhyDoc = insertTree(rootPhyDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    }
+    } else if (doctor->department == 4) {
+        rootNeuDoc = insertTree(rootPhyDoc, doctor,doctor->id, doctor->rank,firstInsert,flip);
+        *firstInsert=1;    
+    } ;
 
     printf("Doctor rank updated to %s\n", rankToString(rank));
 }
@@ -364,16 +377,19 @@ void updateDoctorDepartment(doctor *doctor, department department) {
 
     doctor->department = department;
 
-    if (doctor->department == 0) {
+     if (doctor->department ==1) {
         rootEmeDoc = insertTree(rootEmeDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    } else if (doctor->department == 1) {
+    } else if (doctor->department == 2) {
         rootCarDoc = insertTree(rootCarDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    } else if (doctor->department == 2) {
+    } else if (doctor->department == 3) {
         rootPhyDoc = insertTree(rootPhyDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    }
+    } else if (doctor->department == 4) {
+        rootNeuDoc = insertTree(rootPhyDoc, doctor,doctor->id, doctor->rank,firstInsert,flip);
+        *firstInsert=1;    
+    } ;
 
     printf("Doctor department updated to %s\n", departmentToString(department));
     addDocToDepa(doctor);
@@ -389,16 +405,19 @@ void updateDoctor(doctor *doctor, char name[30], int age, char specialty[200], c
     doctor->rank = rank;
     doctor->department = department;
 
-    if (doctor->department == 0) {
+    if (doctor->department ==1) {
         rootEmeDoc = insertTree(rootEmeDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    } else if (doctor->department == 1) {
+    } else if (doctor->department == 2) {
         rootCarDoc = insertTree(rootCarDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    } else if (doctor->department == 2) {
+    } else if (doctor->department == 3) {
         rootPhyDoc = insertTree(rootPhyDoc, doctor, doctor->id, doctor->rank, firstInsert, flip);
         *firstInsert = 1;
-    }
+    } else if (doctor->department == 4) {
+        rootNeuDoc = insertTree(rootPhyDoc, doctor,doctor->id, doctor->rank,firstInsert,flip);
+        *firstInsert=1;    
+    } ;
 
     printf("Doctor name updated to %s\n", name);
     printf("Doctor age updated to %d\n", age);

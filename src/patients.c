@@ -18,6 +18,7 @@ patient* patients[200];  // Array of pointers to patient structs
 TreeNodePat *rootEmePat=NULL;
 TreeNodePat *rootCarPat=NULL;
 TreeNodePat *rootPhyPat=NULL;
+TreeNodePat *rootNeuPat=NULL;
 void addPatient(char name[30], int age, char medicalCase[200], char address[150], condition condition, department department,bool isAssured) {
     patient *newPatient = (patient*)malloc(sizeof(patient));
     if (newPatient==NULL)
@@ -44,15 +45,18 @@ void addPatient(char name[30], int age, char medicalCase[200], char address[150]
         return;
     }
     patients[patientNum] = newPatient;
-    if (newPatient->department == 0) {
+    if (newPatient->department == 1) {
         rootEmePat = insertTreePat(rootEmePat,newPatient, newPatient->id, condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (newPatient->department == 1) {
+    } else if (newPatient->department == 2) {
         rootCarPat = insertTreePat(rootCarPat,newPatient, newPatient->id, condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (newPatient->department == 2) {
+    } else if (newPatient->department == 3) {
         rootPhyPat = insertTreePat(rootPhyPat,newPatient, newPatient->id, condition,firstInsertP,flipP);
         *firstInsertP=1;
+    }  else if (newPatient->department == 4) {
+        rootNeuPat = insertTreePat(rootNeuPat, newPatient,newPatient->id, condition,firstInsertP,flipP);
+        *firstInsertP=1;    
     } ;
     patientNum++;
         printf("Patient added successfully!\n");
@@ -120,16 +124,19 @@ void updatePatientCondition(patient *patient,condition condition,department depa
    
 
     patient->condition = condition;
-    if (patient->department == 0) {
+    if (patient->department == 1) {
         rootEmePat = insertTreePat(rootEmePat,patient, patient->id,patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (patient->department == 1) {
+    } else if (patient->department == 2) {
         rootCarPat = insertTreePat(rootCarPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (patient->department == 2) {
+    } else if (patient->department == 3) {
         rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } ;
+    }  else if (patient->department == 4) {
+        rootNeuPat = insertTreePat(rootNeuPat, patient,patient->id, condition,firstInsertP,flipP);
+        *firstInsertP=1;    
+    } ;;
 
     printf("Patient condition updated to %s\n", conditionToString(condition));
  if(assignDoc(patient)==NULL){
@@ -144,15 +151,18 @@ void updatePatientDepartment(patient *patient,department department) {
     deletePat(patient->id,patient->condition,patient->department);
     
     patient->department = department;
-    if (patient->department == 0) {
+    if (patient->department == 1) {
         rootEmePat = insertTreePat(rootEmePat,patient, patient->id,patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (patient->department == 1) {
+    } else if (patient->department == 2) {
         rootCarPat = insertTreePat(rootCarPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (patient->department == 2) {
+    } else if (patient->department == 3) {
         rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
+    } else if (patient->department == 4) {
+        rootNeuPat = insertTreePat(rootNeuPat, patient,patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;    
     } ;
     printf("Patient department updated to %s\n", departmentToString(department));
    
@@ -175,15 +185,18 @@ void updatePatient(patient *patient,char name[30],int age,char medicalCase[200],
     strcpy(patient->address, address);
     patient->condition = condition;
     patient->department = department;
-    if (patient->department == 0) {
+    if (patient->department == 1) {
         rootEmePat = insertTreePat(rootEmePat,patient, patient->id,patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (patient->department == 1) {
+    } else if (patient->department == 2) {
         rootCarPat = insertTreePat(rootCarPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
-    } else if (patient->department == 2) {
+    } else if (patient->department == 3) {
         rootPhyPat = insertTreePat(rootPhyPat,patient, patient->id, patient->condition,firstInsertP,flipP);
         *firstInsertP=1;
+    } else if (patient->department == 4) {
+        rootNeuPat = insertTreePat(rootNeuPat, patient,patient->id, patient->condition,firstInsertP,flipP);
+        *firstInsertP=1;    
     } ;
     if(assignDoc(patient)==NULL){
         printf("no doctor available for this patient deporting to another hospital ...\n");
@@ -234,6 +247,9 @@ patient* findPatientById(char id[14],condition searchCondition) {
     if (foundNode == NULL && rootPhyPat != NULL) {
         foundNode = searchPat(rootPhyPat, id, searchCondition, firstSearchP);
     }
+     if (foundNode == NULL && rootNeuPat != NULL) {
+        foundNode = searchPat(rootNeuPat, id, searchCondition, firstSearchP);
+    }
     return foundNode;
 
 }
@@ -245,13 +261,16 @@ void deletePat(char id[14],condition searchCondition,department searchDepartment
             break;
         }
     }
-    if (searchDepartment == 0) {
+    if (searchDepartment == 1) {
         rootEmePat = deleteNodePat(rootEmePat, id, searchCondition, firstSearchP);
-    } else if (searchDepartment == 1) {
-        rootCarPat = deleteNodePat(rootCarPat, id, searchCondition, firstSearchP);
     } else if (searchDepartment == 2) {
+        rootCarPat = deleteNodePat(rootCarPat, id, searchCondition, firstSearchP);
+    } else if (searchDepartment == 3) {
         rootPhyPat = deleteNodePat(rootPhyPat, id, searchCondition, firstSearchP);
-    }
+    }else if (patient->department == 4) {
+        rootNeuPat = deleteNodePat(rootNeuPat, id, searchCondition,firstSearchP);
+        *firstSearchP=1;    
+    } ;
     patientNum--;
     deletePatientFromDepa(patient);
     deleteList(&(patient->assignedDoc->patientsHead), patient);

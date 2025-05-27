@@ -23,6 +23,8 @@ extern int *firstSearch;
 extern TreeNode *rootEmeDoc;
 extern TreeNode *rootCarDoc;
 extern TreeNode *rootPhyDoc;
+extern TreeNode *rootNeuDoc;
+extern TreeNodePat *rootNeuPat;
 extern TreeNodePat *rootEmePat;
 extern TreeNodePat *rootCarPat;
 extern TreeNodePat *rootPhyPat;
@@ -157,8 +159,8 @@ void cleanup(void) {
         departments[i].numPat = 0;
     }
 
-    rootEmeDoc = rootCarDoc = rootPhyDoc = NULL;
-    rootEmePat = rootCarPat = rootPhyPat = NULL;
+    rootEmeDoc = rootCarDoc = rootPhyDoc=rootNeuDoc = NULL;
+    rootEmePat = rootCarPat = rootPhyPat =rootNeuPat= NULL;
     employeNum = 0;
     patientNum = 0;
 }
