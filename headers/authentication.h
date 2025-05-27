@@ -2,6 +2,6 @@
 #define AUTH_H
 
 
-void authenticateUser();
+void authenticateUser(void);
 
 #endif

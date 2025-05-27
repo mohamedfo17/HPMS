@@ -8,7 +8,7 @@
 #define PASSKEY "1234" 
 #define MAX_ATTEMPTS 3   
 
-void authenticateUser() {
+void authenticateUser(void) {
     char input[50];
     int attempts = 0;
 
