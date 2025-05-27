@@ -69,14 +69,21 @@ int saveData(FILE *file) {
     // Save patients
     for (int i = 0; i < patientNum; i++) {
         patient temp = *patients[i];
-        temp.assignedDoc = NULL;  // avoid pointer serialization
+        temp.assignedDoc = NULL;  
         if (fwrite(&temp, sizeof(patient), 1, file) != 1) return 0;
     }
-
+    //departments
+    for (int i = 0; i < 4; i++) {
+        departmentInfo tempDept = departments[i];
+        memset(tempDept.doctors, 0, sizeof(tempDept.doctors));
+        memset(tempDept.patients, 0, sizeof(tempDept.patients));
+        
+        if (fwrite(&tempDept, sizeof(departmentInfo), 1, file) != 1) return 0;
+    }
     return 1;
 }
 
-// ===================== LOAD ======================
+// load
 
 int loadAllData(void) {
     FILE *file = fopen(SAVE_FILE, "rb");
@@ -131,10 +138,22 @@ int loadData(FILE *file) {
         strncpy(patients[i]->id, tempPatients[i].id, 14);
         patients[i]->sessionCost = tempPatients[i].sessionCost;
     }
+    for (int i = 0; i < 4; i++) {
+        departmentInfo tempDept;
+        if (fread(&tempDept, sizeof(departmentInfo), 1, file) != 1) return 0;
+        departments[i].department = tempDept.department;
+        departments[i].numDoc = tempDept.numDoc;
+        departments[i].numPat = tempDept.numPat;
+        departments[i].surgeryRoomsDepa = tempDept.surgeryRoomsDepa;
+        departments[i].patientRoomsDepa = tempDept.patientRoomsDepa;
+        departments[i].income = tempDept.income;
+        departments[i].expenses = tempDept.expenses;
+        departments[i].balence = tempDept.balence;
+        
 
     return 1;
 }
-
+}
 // ===================== CLEANUP + TREE REBUILD ======================
 
 void cleanup(void) {

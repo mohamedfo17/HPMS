@@ -102,7 +102,7 @@ scanf(" %c", &c); // The space skips any whitespace/newlines
     break;
 
   case 'c': {
-
+    printf("\nThis is an application for client side ");
     printf("\nDo you have an account?(y/n) ");
 
     c1 = getchar();

@@ -1,5 +1,5 @@
      COMPLETED PATIENTS REPORT       
-Total Patients: 1
+Total Patients: 2
 
 --- PATIENT 1 ---
 ID: asd__021100000
@@ -8,6 +8,15 @@ Age: 21
 Address: sadasd
 Medical Case: fsdf
 Condition: urgence
+Department: Lab
+
+--- PATIENT 2 ---
+ID: asd__020200001
+Name: asd
+Age: 20
+Address: qwe
+Medical Case: sad
+Condition: danger
 Department: Lab
 
            END OF REPORT             
