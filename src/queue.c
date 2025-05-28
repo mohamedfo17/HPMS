@@ -45,7 +45,7 @@ patient* dequeue(Queue *q) {
 
 
 int isEmpty(Queue* queue) {
-    return (queue->front == NULL); // 1 = true (empty), 0 = false (not empty)
+    return (queue->front == NULL); 
 }
 
 void freeQueue(Queue *q) {
@@ -54,7 +54,7 @@ void freeQueue(Queue *q) {
         q->front = q->front->next;
 
         if (temp->patient != NULL) {
-            free(temp->patient);  // only if not freed in dequeue
+            free(temp->patient);  
         }
 
         free(temp);

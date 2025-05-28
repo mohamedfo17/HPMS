@@ -7,7 +7,6 @@
 
 
 
-// Create a new TreeNode for a doctor
 TreeNode* createNode(char data[14], doctor *doctor) {
     TreeNode *newNode = (TreeNode *)malloc(sizeof(TreeNode));
     strcpy(newNode->data, data);
@@ -17,7 +16,6 @@ TreeNode* createNode(char data[14], doctor *doctor) {
     return newNode;
 }
 
-// Insert a doctor into the tree
 TreeNode* insertTree(TreeNode *root, doctor *doctor, char data[14], rank rank, int *firstInser, int *flip) {
     if (root == NULL) {
         return createNode(data, doctor);
@@ -44,7 +42,6 @@ TreeNode* insertTree(TreeNode *root, doctor *doctor, char data[14], rank rank, i
     return root;
 }
 
-// Find the node with minimum data (used in deletion)
 TreeNode* findMin(TreeNode* root) {
     TreeNode* current = root;
     while (current && current->left != NULL) {
@@ -53,7 +50,6 @@ TreeNode* findMin(TreeNode* root) {
     return current;
 }
 
-// Delete a doctor from the tree
 TreeNode* deleteNode(TreeNode* root,  char data[14], rank rank, int *firstSearch) {
     if (root == NULL) {
         return NULL;

@@ -14,7 +14,6 @@ departmentInfo departments[4] = {
 };
 
 void addDocToDepa(doctor* doc) {
-    // Add doctor to department at the next available position
     int depIndex = doc->department - 1;
     departments[depIndex].doctors[departments[depIndex].numDoc] = doc;
     departments[depIndex].numDoc++;
@@ -75,16 +74,13 @@ void deleteDocFromDepa(doctor* doc) {
         return;
     }
     
-    int depIndex = doc->department - 1;  // Assuming department numbers start at 1.
-    
-    // Safety check: if department index is out of bounds,
-    // (this assumes NUM_DEPARTMENTS is defined appropriately)
+    int depIndex = doc->department - 1; 
+
     if (depIndex < 0 || depIndex >= 4) {
         return;
     }
     
     int found = -1;
-    // Search for the doctor in the department's list
     for (int i = 0; i < departments[depIndex].numDoc; i++) {
         if (departments[depIndex].doctors[i] == doc) {
             found = i;
@@ -92,7 +88,6 @@ void deleteDocFromDepa(doctor* doc) {
         }
     }
     
-    // If found, shift the array left by one position to remove the doctor
     if (found != -1) {
         for (int i = found; i < departments[depIndex].numDoc - 1; i++) {
             departments[depIndex].doctors[i] = departments[depIndex].doctors[i + 1];
@@ -105,15 +100,13 @@ void deletePatientFromDepa(patient* pat) {
         return;
     }
     
-    int depIndex = pat->department - 1;  // Assuming department numbers start at 1.
+    int depIndex = pat->department - 1;  
     
-    // Safety check: if department index is out of bounds
     if (depIndex < 0 || depIndex >= 4) {
         return;
     }
     
     int found = -1;
-    // Search for the patient in the department's list
     for (int i = 0; i < departments[depIndex].numPat; i++) {
         if (departments[depIndex].patients[i] == pat) {
             found = i;
@@ -121,7 +114,6 @@ void deletePatientFromDepa(patient* pat) {
         }
     }
     
-    // If found, shift the array left to remove the patient
     if (found != -1) {
         if (departments[depIndex].patients[found]->condition == 1 || 
             departments[depIndex].patients[found]->condition == 2) {

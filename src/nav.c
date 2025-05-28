@@ -39,11 +39,11 @@ void addPatientNav() {
     
     printf("1-Enter the patient name: ");
     fgets(name, sizeof(name), stdin);
-    name[strcspn(name, "\n")] = 0; // Remove newline character
+    name[strcspn(name, "\n")] = 0; 
     
     printf("2-Enter the patient age: ");
     scanf("%d", &age);
-    while (getchar() != '\n'); // Clear input buffer after scanf
+    while (getchar() != '\n'); 
     
     printf("3-Enter the patient medical case: ");
     fgets(medicalCase, sizeof(medicalCase), stdin);
@@ -61,7 +61,6 @@ void addPatientNav() {
     printf("Enter choice (1-4): ");
     scanf("%d", &conditionChoice);
     if(checkRange(conditionChoice,1,4)){
-    // Convert the choice to the condition enum
     switch(conditionChoice) {
         case 1:
             patientCondition = urgence;
@@ -82,7 +81,7 @@ void addPatientNav() {
     
     while (getchar() != '\n'); // Clear input buffer
     
-    printf("6-Select doctor department:\n");
+    printf("6-Select patient department:\n");
     printf("   1. Lab\n");
     printf("   2. Cardiology\n");
     printf("   3. Physiology\n");
@@ -416,14 +415,13 @@ void addDoctorNav() {
     printf("   6. President\n");
     printf("Enter choice (1-6): ");
     scanf("%d", &rankChoice);
-    printf("6-Select patient department:\n");
+    printf("6-Select doctor department:\n");
     printf("   1. Lab\n");
     printf("   2. Cardiology\n");
     printf("   3. Physiology\n");
     printf("   4. neurology\n");
     printf("Enter choice (1-4): ");
     scanf("%d", &departmentDoc);
-    // Convert the choice to the rank enum
     if( checkPositionAvailibility( rankChoice, departmentDoc)){
     switch(rankChoice) {
         case 1:
@@ -978,7 +976,7 @@ void managePatients() {
         if (choice == 1) {
             // Declare end of session
             printf("Ending session for doctor: %s\n", doc->name);
-            patient *p = dequeue(doc->doctorQueue);  // Only here we modify the queue
+            patient *p = dequeue(doc->doctorQueue); 
             deleteList(&(doc->patientsHead),p);
             
             if (p != NULL) {

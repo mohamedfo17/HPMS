@@ -1,7 +1,6 @@
 #ifndef DEPARTMENTS_H     
 #define DEPARTMENTS_H
 
-// Forward declarations
 typedef struct doctor doctor;
 typedef struct patient patient;
 
@@ -16,10 +15,10 @@ typedef struct surgeryRooms{
 }surgeryRooms;
 typedef struct {
     department department;
-    doctor* doctors[20];  // Use pointer instead of array
-    patient* patients[50];  // Fixed array size for patients
+    doctor* doctors[20]; 
+    patient* patients[50];  
     int numDoc;
-    int numPat;  // Added counter for patients
+    int numPat; 
     surgeryRooms surgeryRoomsDepa;
     patientRooms patientRoomsDepa;
     float balence;

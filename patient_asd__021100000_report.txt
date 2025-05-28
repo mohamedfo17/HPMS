@@ -1,6 +1,4 @@
-=====================================
       INDIVIDUAL PATIENT REPORT      
-=====================================
 
 --- PATIENT INFORMATION ---
 ID: asd__021100000

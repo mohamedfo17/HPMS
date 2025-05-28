@@ -1,13 +1,12 @@
-     COMPLETED PATIENTS REPORT       
-Total Patients: 1
-
---- PATIENT 1 ---
+      INDIVIDUAL PATIENT REPORT      
+--- PATIENT INFORMATION ---
 ID: alice060200000
 Name: alice
 Age: 60
 Address: derguana
+
+--- MEDICAL INFORMATION ---
 Medical Case: 20
 Condition: danger
 Department: Lab
-
            END OF REPORT             

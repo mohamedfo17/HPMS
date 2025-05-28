@@ -1,13 +1,10 @@
-// In treeDoc.h
 #ifndef TREEDOC_H
 #define TREEDOC_H
 #include "doctors.h"
 
-// Forward declaration for doctor struct
 struct doctor;
 
-// Don't forward declare rank here
-// Remove this line: typedef int rank;
+
 
 typedef struct Node {
     char data[14];

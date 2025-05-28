@@ -36,8 +36,6 @@ int loadData(FILE *file);
 void cleanup(void);
 void rebuildTrees(void);
 
-// ===================== SAVE ======================
-
 int saveAllData(void) {
     FILE *file = fopen(SAVE_FILE, "wb");
     if (!file) {
@@ -154,8 +152,6 @@ int loadData(FILE *file) {
     return 1;
 }
 }
-// ===================== CLEANUP + TREE REBUILD ======================
-
 void cleanup(void) {
     for (int i = 0; i < employeNum; i++) {
         if (doctors[i]) {

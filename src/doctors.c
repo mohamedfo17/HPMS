@@ -17,7 +17,7 @@ int n=0;
 int *firstInsert=&n;
 int f=0;
 int *flip=&f;
-int g=0;//maybe you will need to declare them in doc and pat header files
+int g=0;
 int *firstSearch=&g;
 extern departmentInfo departments[4];
 
@@ -28,30 +28,20 @@ doctor* doctors[200];  // Array of pointers to doctor structs
 #include <string.h>
 
 void initId(char id[15], const char name[30], int age, rank rankValue, int employeeNum) {
-    // Copy first 5 letters of name or fill with '_'
     for (int i = 0; i < 5; i++) {
         id[i] = (name[i] != '\0') ? name[i] : '_';
     }
-
-    // Add age as 3 characters
     id[5] = (age / 100) % 10 + '0';
     id[6] = (age / 10) % 10 + '0';
     id[7] = age % 10 + '0';
-
-    // Add rank (convert enum to char)
     id[8] = rankValue + '0';
-
-    // Add employee number as 5 characters
     id[9]  = (employeeNum / 10000) % 10 + '0';
     id[10] = (employeeNum / 1000) % 10 + '0';
     id[11] = (employeeNum / 100) % 10 + '0';
     id[12] = (employeeNum / 10) % 10 + '0';
     id[13] = employeeNum % 10 + '0';
-
-    // Null-terminate
     id[14] = '\0';
 }
-
 
 void addDoctor(char name[30], int age, char speciality[30], char address[150], rank rank,department department) {
     doctor *newDoc = (doctor*)malloc(sizeof(doctor));
@@ -140,7 +130,6 @@ doctor* assignDoc(patient *patient){
             insertList(&(assignedDoc->patientsHead), patient);
 
             return assignedDoc;
-            //add to queue
           }    
 
         break;
@@ -171,7 +160,6 @@ doctor* assignDoc(patient *patient){
           insertList(&(assignedDoc->patientsHead), patient);
 
           return assignedDoc;
-          //add to queue
         }    
 
         break;
@@ -202,7 +190,6 @@ doctor* assignDoc(patient *patient){
           insertList(&(assignedDoc->patientsHead), patient);
 
           return assignedDoc;
-          //add to queue
         }    
 
         break;
@@ -232,12 +219,10 @@ doctor* assignDoc(patient *patient){
           enqueue(assignedDoc->doctorQueue,patient,assignedDoc);
           insertList(&(assignedDoc->patientsHead), patient);
           return assignedDoc;
-          //add to queue
         }    
 
         break;
     default:
-        //add to queue 
         break;
     }
    
@@ -320,14 +305,13 @@ printf("   id : %s\n", doctors[i]->id);
 printf("   age : %d\n", doctors[i]->age);
 printf("   address : %s\n", doctors[i]->address);
 printf("   speciality : %s\n", doctors[i]->speciality);
-printf("   rank : %s\n", rankToString(doctors[i]->rank)); // assuming you have rankToString
+printf("   rank : %s\n", rankToString(doctors[i]->rank)); 
 printf("   assigned to : %s department\n", departmentToString(doctors[i]->department));
 printf("   has %d patients\n", doctors[i]->numPatients);
 printf("   max patients capacity : %d\n", doctors[i]->maxPatients);
 printf("   wage : %d\n", doctors[i]->wage);
         }}
     ;
-    //manage patients
     
 }
 void updateDoctorName(doctor *doctor, char name[30]) {
@@ -475,7 +459,6 @@ int wage(doctor *doctor){
 void viewDocAllPatients() {
     char name[30];
 
-    // Flush input buffer just in case
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 
@@ -484,11 +467,7 @@ void viewDocAllPatients() {
         printf("Error reading input.\n");
         return;
     }
-
-    // Remove newline character if present
     name[strcspn(name, "\n")] = '\0';
-
-    // Search for doctor
     doctor *doc = NULL;
     for (int i = 0; i < employeNum; i++) {
         if (doctors[i] != NULL && strcmp(doctors[i]->name, name) == 0) {
@@ -509,7 +488,6 @@ void viewDocAllPatients() {
         return;
     }
 
-    // Traverse and print the list
     list *current = doc->patientsHead;
     int patientCount = 1;
     
