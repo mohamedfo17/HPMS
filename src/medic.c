@@ -12,7 +12,7 @@ date sys_date(void){
     return sys_date;
 }
 int rand_order(void){
-    srand(time(0));  // Generate a random order number between 0 and 999
+    srand(time(0));  
     int order = rand() % 1000;
     return order;
 }

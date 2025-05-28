@@ -13,7 +13,6 @@ void deleteList(list **patHead, patient *pat) {
     list *current = *patHead;
     list *prev = NULL;
 
-    // Find the node containing the patient
     while (current != NULL && current->pat != pat) {
         prev = current;
         current = current->next;
@@ -24,9 +23,8 @@ void deleteList(list **patHead, patient *pat) {
         return;
     }
 
-    // Remove the node
     if (prev == NULL) {
-        *patHead = current->next; // Removing head
+        *patHead = current->next; 
     } else {
         prev->next = current->next;
     }

@@ -15,14 +15,7 @@
 #include "../headers/linked.h"
 
 
-
-
-
 extern doctor *doctors[200];
-
-  
-    
-
 
 
 void addPatientNav() {
@@ -79,7 +72,7 @@ void addPatientNav() {
         homePage();
     }
     
-    while (getchar() != '\n'); // Clear input buffer
+    while (getchar() != '\n'); 
     
     printf("6-Select patient department:\n");
     printf("   1. Lab\n");
@@ -111,7 +104,6 @@ void addPatientNav() {
     printf("   1. Yes\n");
     printf("   2. No\n");
     scanf("%d",&isAssured);
-    // Now call the addPatient function with the collected data
     addPatient(name, age, medicalCase, address, patientCondition, patientDepartment,isAssured);
     
 }
@@ -382,7 +374,7 @@ void addDoctorNav() {
     int rankChoice;
 
     printf("\n--- Add Doctor ---\n");
-    while (getchar() != '\n'); // Clear input buffer
+    while (getchar() != '\n'); 
 
     printf("1-Enter the doctor name: ");
     fgets(name, sizeof(name), stdin);
@@ -390,7 +382,7 @@ void addDoctorNav() {
 
     printf("2-Enter the doctor age: ");
     scanf("%d", &age);
-    while (getchar() != '\n'); // Clear input buffer after scanf
+    while (getchar() != '\n');
     if (age<18||age>101)
     {
         printf("error\n");
@@ -443,15 +435,14 @@ void addDoctorNav() {
             doctorRank = president;
             break;
         default:
-            doctorRank = intern; // Default
+            doctorRank = intern; 
             printf("Invalid choice, setting to Intern.\n");
     }
     addDoctor(name, age, specialty, address, doctorRank,departmentDoc);}
     else{
         printf("there is no available position for this doctor\n");
     }
-    //try no switch here
-    // Call your addDoctor function here (you should have one implemented)
+
    
 }
 
@@ -490,11 +481,10 @@ void viewDoctorNav() {
 
     char id[15];
     int ch;
-while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+while ((ch = getchar()) != '\n' && ch != EOF);
 
     fgets(id, sizeof(id), stdin);
     
-    // Remove newline if present
     size_t len = strlen(id);
     if (len > 0 && id[len - 1] == '\n') {
         id[len - 1] = '\0';}
@@ -516,8 +506,8 @@ while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
     printf("Age: %d\n", doc->age);
     printf("Specialty: %s\n", doc->speciality);
     printf("Address: %s\n", doc->address);
-    printf("Rank: %s\n", rankToString(doc->rank)); // Convert rank enum to string
-    printf("Department: %s\n", departmentToString(doc->department)); // Convert department enum to string
+    printf("Rank: %s\n", rankToString(doc->rank)); 
+    printf("Department: %s\n", departmentToString(doc->department));
     printf("----------------------\n");
 }
 void editDoctorNav() {

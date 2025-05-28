@@ -322,15 +322,14 @@ void generateRepo() {
 
 void generateOneRepo(){
  int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF); // flush stdin
+    while ((ch = getchar()) != '\n' && ch != EOF); 
   
     char patientId[15];
     printf("Enter Patient ID: ");
     scanf("%s", patientId);
     
     patient *foundPatient = NULL;
-    
-    // Search for patient in the array
+
     for (int i = 0; i < patientNum; i++) {
         if (strcmp(patients[i]->id, patientId) == 0) {
             foundPatient = patients[i];
